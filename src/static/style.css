@@ -1,0 +1,32 @@
+header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    background-color: #ffffff;
+}
+
+.fancy{
+    font-family: 'Great Vibes', cursive;
+    font-size: 3rem;
+}
+
+/* ------------------ Upload form ------------------ */
+
+#memory-text {
+  resize: both;
+}
+
+div.upload-memory {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+form.upload-memory-form {
+  display: table;
+}
+
+div.upload-memory-form {
+  display: table-row;
+}
