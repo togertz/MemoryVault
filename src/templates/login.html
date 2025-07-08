@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1> Login </h1>
+
+<div class="form user-login">
+    {% if register %}
+        <div class="alert alert-success">User was created. Please login:</div>
+    {% endif %}
+    <form action="{{ url_for('user.login') }}" method="post">
+        <div class="form-element">
+            <input type="text" name="username" placeholder="Username" value="{{ username_value }}" required>
+        </div>
+        <div class="form-element">
+            <input type="password" name="password" placeholder="Password" required>
+        </div>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endwith %}
+        <button class="button" type="submit">Login</button>
+    </form>
+    <div class="nexto">
+        <p>No account yet?
+        <a href="{{ url_for('user.register') }}" class="link-button">Create an account</a>
+    </div>
+</div>
+
+{% endblock %}

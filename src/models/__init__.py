@@ -1,7 +1,8 @@
 from .base import db
 from .memory import Memory
+from .user import User
 
-__all__ = ["db", "Memory"]
+__all__ = ["db", "Memory", "User"]
 
 from flask import Flask
 

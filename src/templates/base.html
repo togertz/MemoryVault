@@ -9,11 +9,31 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
+    <script src="{{ url_for('static', filename='base.js') }}"></script>
+
     <header>
         <h1 class="fancy">MemoryVault</h1>
     </header>
 
-    {% block content %}
-    {% endblock %}
+    <div class="container">
+        <nav class="sidebar">
+            <ul>
+                <li><a href="{{ url_for('base.index') }}">Homepage</a></li>
+                <li><a href="{{ url_for('user.login') }}">Login</a></li>
+                <li><a href="{{ url_for('user.register') }}">Register</a></li>
+                <li><a href="{{ url_for('memory.upload') }}">Memory Upload</a></li>
+            </ul>
+        </nav>
+
+        <main class="main-content">
+            {% block content %}
+            {% endblock %}
+
+            {% if placeholder %}
+                <h1>{{ placeholder }}</h1>
+            {% endif %}
+        </main>
+    </div>
+
 </body>
 </html>

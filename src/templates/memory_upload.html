@@ -3,19 +3,19 @@
 
 <h1> Upload a new Memory</h1>
 
-<div class="upload-memory">
-    <form action="{{ url_for('memory.upload') }}", method="post">
-        <div class="upload-memory-form">
+<div class="form">
+    <form action="{{ url_for('memory.upload') }}" method="post">
+        <div class="form-element">
             <label for="date">Date of Memory</label>
             <input type="date" name="date" required>
         </div>
 
-        <div class="upload-memory-form">
+        <div class="form-element">
             <label for="description">Description</label>
-            <textarea name="description" cols="40", rows="10"></textarea>
+            <textarea name="description" cols="40" rows="10"></textarea>
         </div>
 
-        <button class="button-3" type="submit">Upload</button>
+        <button class="button" type="submit">Upload</button>
     </form>
 </div>
 
