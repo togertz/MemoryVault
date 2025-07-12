@@ -6,24 +6,36 @@ from ..models import db, User
 from ..app import bcrypt_app
 
 class UserException(Exception):
-    def __init__(self, *args):
+    def __init__(self, message:str, *args):
         super().__init__(*args)
+        self.message = message
+
+    def get_message(self) -> str:
+        return self.message
 
 class LoginException(Exception):
-    def __init__(self, *args):
+    def __init__(self, message:str, *args):
         super().__init__(*args)
+        self.message = message
+
+    def get_message(self) -> str:
+        return self.message
 
 class UserManagement(ABC):
 
     @staticmethod
     def create_user(username:str,
                     password:str,
+                    password_repeat:str,
                     firstname:str,
                     lastname:str,
                     birthday:str) -> bool:
 
         if UserManagement.username_taken(username):
-            raise UserException("Username already exists")
+            raise UserException(message="No user was created. Username already exists")
+
+        if password != password_repeat:
+            raise UserException(message="No user was created. Password and repeated password need to be the same")
 
         username = username.lower()
         password_hash = UserManagement.hash_password(password)
@@ -56,4 +68,6 @@ class UserManagement(ABC):
 
         user = User.query.filter_by(username=username).first()
 
-        return bcrypt_app.check_password_hash(user.password_hash, password)
+        validLogin = bcrypt_app.check_password_hash(user.password_hash, password)
+
+        return user.id if validLogin else None
