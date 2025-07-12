@@ -54,8 +54,6 @@ class UserManagement(ABC):
         if not UserManagement.username_taken(username=username):
             return False
 
-        password_hash = UserManagement.hash_password(password=password)
-
         user = User.query.filter_by(username=username).first()
 
-        return user.password_hash == password_hash
+        return bcrypt_app.check_password_hash(user.password_hash, password)
