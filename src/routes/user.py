@@ -13,7 +13,7 @@ def login():
         if UserManagement.check_login(username=username,
                                       password=password):
             flash("Successfully logged in", "success")
-            return render_template('login.html', title="Login")
+            return redirect(url_for("memory.upload"))#render_template('login.html', title="Login")
 
         else:
             if UserManagement.username_taken(username=username):

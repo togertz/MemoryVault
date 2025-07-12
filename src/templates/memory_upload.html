@@ -1,9 +1,15 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h1> Upload a new Memory</h1>
 
 <div class="form">
+    <h1> Upload a new Memory</h1>
+    <br>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+    {% endwith %}
     <form action="{{ url_for('memory.upload') }}" method="post">
         <div class="form-element">
             <label for="date">Date of Memory</label>
