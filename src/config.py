@@ -13,4 +13,13 @@ class Config:
     SQLALCHEMY_DATABASE_URI = f'postgresql+psycopg2://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_URL}/{POSTGRES_DATABASE}'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
+    USE_S3 = False
+    UPLOAD_FOLDER = "../data/images"
+
     SECRET_KEY = os.getenv("SESSION_SECRET")
+
+class ProductionConfig:
+    pass
+
+class DevelopmentConfig(Config):
+    DEBUG = True
