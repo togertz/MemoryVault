@@ -3,7 +3,12 @@
 
 
 <div class="form">
-    <h1> Upload a new Memory</h1>
+    {% if user %}
+        <h1>Hello {{ user.firstname }}! </h1>
+        <h2>Upload a new Memory to your Vault</h2>
+    {% else %}
+        <h1> Upload a new Memory</h1>
+    {% endif %}
     <br>
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% for category, message in messages %}

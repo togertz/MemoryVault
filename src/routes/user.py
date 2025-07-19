@@ -6,6 +6,9 @@ user_bp = Blueprint('user', __name__, url_prefix="/u")
 
 @user_bp.route("/login", methods=["GET", "POST"])
 def login():
+    if session.get("user_id", False):
+        return redirect(url_for("memory.upload"))
+
     if request.method == "POST":
         username = request.form.get("username")
         password = request.form.get("password")
@@ -15,6 +18,7 @@ def login():
 
         if user_id:
             session["user_id"] = user_id
+            session["user_html_package"] = UserManagement.get_user_html_package(user_id)
             flash(f"Successfully logged in - {session['user_id']}", "success")
 
             return redirect(url_for("memory.upload"))#render_template('login.html', title="Login")
@@ -29,8 +33,17 @@ def login():
     if request.method == "GET":
         return render_template('login.html', title="Login")
 
+@user_bp.route("/logout", methods=["GET"])
+def logout():
+    session.clear()
+    flash("Successfully logged out", "success")
+    return redirect(url_for("base.index"))
+
 @user_bp.route("/register", methods=["GET", "POST"])
 def register():
+    if session.get("user_id", False):
+        return redirect(url_for("memory.upload"))
+
     if request.method == "GET":
         return render_template("register.html", title="Register")
 

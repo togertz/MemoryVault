@@ -51,6 +51,7 @@ class UserManagement(ABC):
 
         return True
 
+    @staticmethod
     def username_taken(username:str) -> bool:
         username = username.lower()
 
@@ -59,9 +60,11 @@ class UserManagement(ABC):
 
         return username in usernames
 
+    @staticmethod
     def hash_password(password:str) -> str:
         return bcrypt_app.generate_password_hash(password=password).decode('utf-8')
 
+    @staticmethod
     def check_login(username:str, password:str) -> str:
         if not UserManagement.username_taken(username=username):
             return False
@@ -71,3 +74,9 @@ class UserManagement(ABC):
         validLogin = bcrypt_app.check_password_hash(user.password_hash, password)
 
         return user.id if validLogin else None
+
+    @staticmethod
+    def get_user_html_package(user_id):
+        user = User.query.filter_by(id=user_id).first()
+
+        return user.html_package()
