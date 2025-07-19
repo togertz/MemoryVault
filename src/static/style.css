@@ -10,16 +10,15 @@ html, body {
 header {
   height: 80px;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  padding: 20px;
+  padding: 1rem 2rem;
   background-color: #66e181;
 }
 
 .container {
   display: flex;
   flex-direction: row;
-  /* height: calc(100vh-80px) */
   overflow: hidden;
 }
 
@@ -30,6 +29,25 @@ header {
   overflow-y: auto;
   box-sizing: border-box;
   overflow: auto;
+}
+
+.logout-btn {
+  background-color: #ff4d4d;
+  color: white;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.logout-btn:hover {
+    background-color: #cc0000;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
 /* Headline */

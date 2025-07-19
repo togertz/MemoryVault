@@ -19,7 +19,7 @@ def login():
         if user_id:
             session["user_id"] = user_id
             session["user_html_package"] = UserManagement.get_user_html_package(user_id)
-            flash(f"Successfully logged in - {session['user_id']}", "success")
+            flash(f"Successfully logged in", "success")
 
             return redirect(url_for("memory.upload"))#render_template('login.html', title="Login")
 
@@ -35,6 +35,9 @@ def login():
 
 @user_bp.route("/logout", methods=["GET"])
 def logout():
+    if not session.get("user_id", False):
+        return redirect(url_for("user.login"))
+
     session.clear()
     flash("Successfully logged out", "success")
     return redirect(url_for("base.index"))

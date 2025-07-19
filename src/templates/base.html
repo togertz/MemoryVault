@@ -14,6 +14,14 @@
 
     <header>
         <h1 class="fancy">MemoryVault</h1>
+        {% if user %}
+        <div class="user-info">
+            <span class="username">Logged in as <b>{{ user.username }}</b></span>
+            <form method="GET" action="{{ url_for('user.logout')  }}">
+                <button type="submit" class="logout-btn">Logout</button>
+            </form>
+        </div>
+        {% endif %}
     </header>
 
     <div class="container">
