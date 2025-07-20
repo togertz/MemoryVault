@@ -11,7 +11,8 @@ class User(db.Model):
 
     registered_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
 
-    # vault = db.relationship("Vault", backref='owner', uselist=False)
+    family_id = db.Column(db.Integer, db.ForeignKey("family.id"), nullable=True)
+    vault = db.relationship("Vault", backref='owner', uselist=False)
 
     def __repr__(self):
         return f"User {self.username}"
