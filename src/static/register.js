@@ -10,14 +10,18 @@ document.addEventListener('DOMContentLoaded', async function() {
             .then(response => response.json())
             .then(data => {
                 const exists = data.exists;
+
                 let msgElem = document.getElementById('form-warning-username');
+                let registerBtn = document.getElementById('register-btn');
 
                 if (exists) {
                     usernameInput.style.border = "2px solid #da4343";
                     msgElem.textContent = 'Username is already taken.';
+                    registerBtn.disabled = true;
                 } else {
                     usernameInput.style.border = "1px solid #008000";
                     msgElem.textContent = '';
+                    registerBtn.disabled = false;
                 }
             })
     })
@@ -30,16 +34,19 @@ document.addEventListener('DOMContentLoaded', async function() {
         let password = document.getElementById('password').value;
         let password_repeat = document.getElementById('password-repeat').value;
 
-        let msgElem = document.getElementById('form-warning-password')
+        let msgElem = document.getElementById('form-warning-password');
+        let registerBtn = document.getElementById('register-btn');
 
         if (password != password_repeat) {
             pw.style.border = "2px solid #da4343";
             pwRepeat.style.border = "2px solid #da4343";
             msgElem.textContent = 'Passwords must be the same.';
+            registerBtn.disabled = true;
         } else {
             pw.style.border = "1px solid #008000";
             pwRepeat.style.border = "1px solid #008000";
             msgElem.textContent = '';
+            registerBtn.disabled = false;
         }
     })
 

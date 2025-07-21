@@ -10,17 +10,16 @@ html, body {
 header {
   height: 80px;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  padding: 20px;
+  padding: 1rem 2rem;
   background-color: #66e181;
 }
 
 .container {
   display: flex;
   flex-direction: row;
-  /* height: calc(100vh-80px) */
-  overflow: hidden;
+  /* overflow: hidden; */
 }
 
 .main-content {
@@ -32,10 +31,47 @@ header {
   /* overflow: auto; */
 }
 
+.logout-btn {
+  background-color: #ff4d4d;
+  color: white;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.logout-btn:hover {
+    background-color: #cc0000;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
 /* Headline */
 .fancy{
     font-family: 'Great Vibes', cursive;
     font-size: 3rem;
+}
+
+.information-field {
+  background-color: #e8f4fd;
+  border: 1px solid #5bb1e2;
+  color: #0b3d62;
+  padding: .5rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  margin-top: 1rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.information-field::before {
+  content: "ℹ️ ";
+  font-size: 1.2rem;
+  margin-right: 0.3rem;
 }
 
 /* ------------------ Alerts ------------------ */
@@ -112,7 +148,7 @@ header {
   padding: 2rem;
   border-radius: 10px;
   max-width: 600px;
-  margin: auto;
+  margin: 1rem auto 1rem auto;
 }
 
 .user-login {
@@ -152,7 +188,7 @@ header {
   border: none;
   padding: 0.7rem 1.2rem;
   display: block;
-  margin: 2rem auto 0 auto;
+  margin: 2rem auto 2rem auto;
   font-size: 1rem;
   border-radius: 8px;
   cursor: pointer;
@@ -216,4 +252,47 @@ header {
 
 #imagePreview {
   display: none;
+
+.dropdown {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-color: #ffffff;
+  border: 1px solid #ccc;
+  padding: 0.6rem 1rem;
+  font-size: 1rem;
+  border-radius: 6px;
+  color: #333;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.dropdown:focus {
+  outline: none;
+  border-color: #5bb1e2;
+  box-shadow: 0 0 0 2px rgba(91, 177, 226, 0.3);
+}
+
+/* ------------------ Information table ------------------ */
+
+.information-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.information-table th,
+.information-table td {
+  border: 1px solid #ccc;
+  padding: 0.75rem;
+  text-align: left;
+}
+
+.information-table th {
+  background-color: #86cde1;
+  font-weight: bold;
+}
+
+.information-table tr:nth-child(even) {
+  background-color: #f2f2f2;
 }
