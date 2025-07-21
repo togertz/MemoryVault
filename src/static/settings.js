@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         const durationSelection = document.getElementById("collection-period-duration");
         const startDiv = document.getElementById("collection-period-start-div");
         const startSelection = document.getElementById("collection-period-start");
-        const information-field = document.getElementById("period-end-info");
+        const information_field = document.getElementById("period-end-info");
 
         const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
         let normalizeMonthYear = function (month, year) {
@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             let [startMonth, startYear] = startSelection.value.split("-").map(Number);
 
             const endDate = normalizeMonthYear(startMonth + (duration - 1), startYear);
-            information-field.innerHTML = "Collection peroid would end on last day of <b>" + monthNames[endDate["month"]]  + " " + endDate["year"] + "</b>.";
+            information_field.innerHTML = "Collection peroid would end on last day of <b>" + monthNames[endDate["month"]]  + " " + endDate["year"] + "</b>.";
         };
 
         selectionFiller();

@@ -10,7 +10,8 @@ def index():
         return redirect(url_for("user.login"))
 
     vault_info = VaultManagement.get_vault_info(user_id=session.get("user_id", False))
-    vault_info["number_memories"] = VaultManagement.get_number_memories(user_id=session.get("user_id", None))
+    if vault_info:
+        vault_info["number_memories"] = VaultManagement.get_number_memories(user_id=session.get("user_id", None))
     session["vault_info"] = vault_info
 
     return render_template("settings.html", user=session["user_html_package"], vault=session.get("vault_info", None))

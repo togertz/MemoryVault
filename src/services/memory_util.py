@@ -17,6 +17,7 @@ class MemoryManagement(ABC):
 
         new_memory = Memory(description=description,
                             date=memory_date,
+                            location="None",
                             image_uri=image_uri,
                             vault_id=vault_id)
         db.session.add(new_memory)

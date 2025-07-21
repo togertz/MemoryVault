@@ -24,8 +24,6 @@ class Vault(db.Model):
     def get_number_of_memories_in_timespan(self, timespan_begin:date, timespan_end:date):
         number_memories = 0
         for memory in self.memories:
-            print(memory)
-
             if timespan_begin < memory.date.date() and memory.date.date() <= timespan_end:
                 number_memories += 1
 

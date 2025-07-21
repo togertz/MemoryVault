@@ -22,4 +22,4 @@ def upload():
                                        image_file=image_file,
                                        vault_id=session.get("vault_info")["vault_id"])
 
-    return render_template('memory_upload.html', title="Homepage")
+        return render_template('memory_upload.html', title="Homepage", user=session["user_html_package"], vault=session["vault_info"])
