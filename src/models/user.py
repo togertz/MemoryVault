@@ -17,7 +17,7 @@ class User(db.Model):
     def __repr__(self):
         return f"User {self.username}"
 
-    def html_package(self):
+    def json_package(self):
         return {
             "username": self.username,
             "firstname": self.firstname,

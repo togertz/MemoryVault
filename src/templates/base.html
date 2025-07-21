@@ -17,6 +17,9 @@
         {% if user %}
         <div class="user-info">
             <span class="username">Logged in as <b>{{ user.username }}</b></span>
+            <form method="GET" action="{{ url_for('settings.index')  }}">
+                <button type="submit" class="button">Settings</button>
+            </form>
             <form method="GET" action="{{ url_for('user.logout')  }}">
                 <button type="submit" class="logout-btn">Logout</button>
             </form>
@@ -31,6 +34,7 @@
                 <li><a href="{{ url_for('user.login') }}">Login</a></li>
                 <li><a href="{{ url_for('user.register') }}">Register</a></li>
                 <li><a href="{{ url_for('memory.upload') }}">Memory Upload</a></li>
+                <li><a href="{{ url_for('settings.index') }}">Settings</a></li>
                 <li><a href="{{ url_for('user.logout') }}">Logout</a></li>
             </ul>
         </nav>

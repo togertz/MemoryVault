@@ -9,6 +9,11 @@
     {% else %}
         <h1> Upload a new Memory</h1>
     {% endif %}
+    {% if vault %}
+        <div class="information-field">
+            You have {{ vault.days_left }} days remaining in your Collection Period.
+        </div>
+    {% endif %}
     <br>
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% for category, message in messages %}

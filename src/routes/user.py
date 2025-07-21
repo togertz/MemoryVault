@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for, jsonify, session
 
-from ..services import UserManagement, UserException
+from ..services import UserManagement, UserException, VaultManagement
 
 user_bp = Blueprint('user', __name__, url_prefix="/u")
 
@@ -18,7 +18,8 @@ def login():
 
         if user_id:
             session["user_id"] = user_id
-            session["user_html_package"] = UserManagement.get_user_html_package(user_id)
+            session["user_html_package"] = UserManagement.get_user_json_package(user_id)
+            session["vault_info"] = VaultManagement.get_vault_info(user_id)
             flash(f"Successfully logged in", "success")
 
             return redirect(url_for("memory.upload"))#render_template('login.html', title="Login")

@@ -1,6 +1,5 @@
 from abc import ABC
 from datetime import datetime
-from flask_bcrypt import Bcrypt
 
 from ..models import db, User
 from ..app import bcrypt_app
@@ -76,7 +75,7 @@ class UserManagement(ABC):
         return user.id if validLogin else None
 
     @staticmethod
-    def get_user_html_package(user_id):
+    def get_user_json_package(user_id):
         user = User.query.filter_by(id=user_id).first()
 
-        return user.html_package()
+        return user.json_package()

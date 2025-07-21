@@ -9,11 +9,15 @@ def upload():
         flash("Please login first", "warning")
         return redirect(url_for("user.login"))
 
+    if not session.get("vault_info", False):
+        return redirect(url_for("settings.index"))
+
     if request.method == "GET":
-        return render_template('memory_upload.html', title="Homepage", user=session["user_html_package"])
+        return render_template('memory_upload.html', title="Homepage", user=session["user_html_package"], vault=session["vault_info"])
     if request.method == "POST":
 
         MemoryManagement.upload_memory(description=request.form["description"],
-                                       date=request.form["date"])
+                                       date=request.form["date"],
+                                       vault_id=session.get("vault_info")["vault_id"])
 
     return render_template('memory_upload.html', title="Homepage")
