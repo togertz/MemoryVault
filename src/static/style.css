@@ -28,7 +28,7 @@ header {
   background-color: #86cde1;
   overflow-y: auto;
   box-sizing: border-box;
-  overflow: auto;
+  /* overflow: auto; */
 }
 
 .logout-btn {
@@ -196,6 +196,11 @@ header {
 
 }
 
+.button:disabled,
+.button:disabled:hover {
+  background-color: #bcd0d1;
+}
+
 .button:hover,
 .link-button:hover {
   background-color: #bcdde0;
@@ -209,6 +214,44 @@ header {
   color: #333;
   text-decoration: none;
 }
+
+#image-label{
+  position: relative;
+  height: 100px;
+  background: #fff;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  display:flex;
+  align-items: center;
+  justify-content: center;
+  border: #000000;
+  border-radius: 10px;
+  flex-direction: column;
+  gap: 15px;
+  user-select: none;
+  cursor: pointer;
+  color: #207ed1;
+  transition: all 1s;
+}
+
+#image-label:hover{
+  color: #18ac1c;
+}
+.preview-container {
+  position: relative;
+  display: inline-block;
+  margin-top: 10px;
+}
+
+.preview-container img {
+  max-width: 300px;
+  max-height: 300px;
+  display: block;
+}
+
+#imagePreview {
+  display: none;
 
 .dropdown {
   appearance: none;
