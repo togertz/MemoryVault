@@ -8,7 +8,7 @@ from ..models import db, Memory
 class MemoryManagement(ABC):
 
     @staticmethod
-    def upload_memory(description, date, vault_id, image_file=None):
+    def upload_memory(description, date, vault_id, latitude=None, longitude=None, image_file=None):
         memory_date = datetime.strptime(date, '%Y-%m-%d').date()
 
         image_uri = None
@@ -17,7 +17,8 @@ class MemoryManagement(ABC):
 
         new_memory = Memory(description=description,
                             date=memory_date,
-                            location="None",
+                            latitude=latitude,
+                            longitude=longitude,
                             image_uri=image_uri,
                             vault_id=vault_id)
         db.session.add(new_memory)

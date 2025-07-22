@@ -1,7 +1,9 @@
 {% extends "base.html" %}
 {% block content %}
-<script src="{{ url_for('static', filename='memoryUpload.js') }}"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
 
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="{{ url_for('static', filename='memoryUpload.js') }}"></script>
 
 <div class="form">
     {% if user %}
@@ -23,12 +25,12 @@
     {% endwith %}
     <form action="{{ url_for('memory.upload') }}" enctype="multipart/form-data" method="post">
         <div class="form-element">
-            <label for="date">Date of Memory</label>
+            <label for="date">Date of Memory*</label>
             <input type="date" name="date" required>
         </div>
 
         <div class="form-element">
-            <label for="description">Description</label>
+            <label for="description">Description*</label>
             <textarea name="description" cols="40" rows="10"></textarea>
         </div>
 
@@ -41,6 +43,17 @@
         <div class="preview-container" id="imagePreview">
             <img id="previewImg" src="" alt="Image Preview">
         </div>
+
+        <label for="map-search">Search for location:</label>
+        <input type="text" id="map-search">
+
+        <label for="latitude">Latitude:</label>
+        <input type="number" id="latitude" name="latitude" step="any" readonly>
+
+        <label for="longitude">Latitude:</label>
+        <input type="number" id="longitude" name="longitude" step="any" readonly>
+
+        <div id="map"></div>
 
         <button class="button" type="submit">Upload</button>
     </form>

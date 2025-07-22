@@ -15,11 +15,12 @@ def upload():
     if request.method == "GET":
         return render_template('memory_upload.html', title="Homepage", user=session["user_html_package"], vault=session["vault_info"])
     if request.method == "POST":
-        image_file = request.files.get("image")
 
         MemoryManagement.upload_memory(description=request.form["description"],
                                        date=request.form["date"],
-                                       image_file=image_file,
+                                       latitude=request.form.get("latitude", None),
+                                       longitude=request.form.get("longitude", None),
+                                       image_file=request.files.get("image"),
                                        vault_id=session.get("vault_info")["vault_id"])
 
         return render_template('memory_upload.html', title="Homepage", user=session["user_html_package"], vault=session["vault_info"])
