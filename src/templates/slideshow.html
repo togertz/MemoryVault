@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="elem">
+    <h1>Slideshow</h1>
+    {% if slideshow_info %}
+        {% if slideshow_info.available %}
+            <div class="information-field">
+                The Slideshow is now available! Check out the memories you collected in the last months!
+            </div>
+
+            <form action="{{ url_for('slideshow.start_slideshow') }}" method="get">
+                <label for="presentation-order">Choose the order of the memories</label>
+                <select class="dropdown" id="presentation-order" name="presentation-order" required>
+                    <option value="chronological">Chronological</option>
+                    <option value="random">Random</option>
+                    <option value="reverse-chronological">Reverse chronological</option>
+                </select>
+                <button id="admin-btn" class="button" type="submit">Access slideshow</button>
+            </form>
+        {% else %}
+            <div class="information-field">
+                The Slideshow will be available in {{ slideshow_info.days_left }} days.
+                Keep uploading fond memories and come back once your Collection Period ends on {{ slideshow_info.period_end }}.
+            </div>
+
+            {% if user.admin %}
+                <form action="{{ url_for('slideshow.start_slideshow') }}" method="get">
+                    <label for="presentation-order">Choose the order of the memories</label>
+                    <select class="dropdown" id="presentation-order" name="presentation-order" required>
+                        <option value="chronological">Chronological</option>
+                        <option value="random">Random</option>
+                        <option value="reverse-chronological">Reverse chronological</option>
+                    </select>
+                    <button id="admin-btn" class="button" type="submit">Access slideshow with admin privileges</button>
+                </form>
+            {% endif %}
+        {% endif %}
+    {% else %}
+        Something went wrong :(
+    {% endif %}
+</div>
+
+{% endblock %}

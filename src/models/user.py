@@ -21,4 +21,5 @@ class User(db.Model):
         return {
             "username": self.username,
             "firstname": self.firstname,
+            "admin": True
         }

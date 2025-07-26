@@ -65,8 +65,8 @@ class VaultManagement(ABC):
 
         vault_info["period_duration"] = period_duration.value
         vault_info["period_initial_start"] = period_initial_start
-        vault_info["curr_period_start"] = period_start_end["start_date"]
-        vault_info["curr_period_end"] = period_start_end["end_date"]
+        vault_info["curr_period_start"] = period_start_end["start_date"].strftime("%A, %b %d, %Y")
+        vault_info["curr_period_end"] = period_start_end["end_date"].strftime("%A, %b %d, %Y")
         vault_info["days_left"] = (period_start_end["end_date"] - today).days
 
         return vault_info
@@ -86,5 +86,9 @@ class VaultManagement(ABC):
         vault = VaultManagement._get_vault(user_id=user_id, vault_id=vault_id)
         vault_info = VaultManagement._get_vault_info(vault=vault)
 
-        return vault.get_number_of_memories_in_timespan(timespan_begin=vault_info["curr_period_start"],
-                                                        timespan_end=vault_info["curr_period_end"])
+        if type(vault_info["curr_period_start"]) == str:
+            timespan_begin = datetime.strptime(vault_info["curr_period_start"], "%A, %b %d, %Y").date()
+            timespan_end = datetime.strptime(vault_info["curr_period_end"], "%A, %b %d, %Y").date()
+
+        return vault.get_number_of_memories_in_timespan(timespan_begin=timespan_begin,
+                                                        timespan_end=timespan_end)
