@@ -13,7 +13,7 @@ def upload():
         return redirect(url_for("settings.index"))
 
     if request.method == "GET":
-        return render_template('memory_upload.html', title="Homepage", user=session["user_html_package"], vault=session["vault_info"])
+        return render_template('memory_upload.html', title="Homepage", user=session["user_info"], vault=session["vault_info"])
     if request.method == "POST":
 
         MemoryManagement.upload_memory(description=request.form["description"],
@@ -23,4 +23,4 @@ def upload():
                                        image_file=request.files.get("image"),
                                        vault_id=session.get("vault_info")["vault_id"])
 
-        return render_template('memory_upload.html', title="Homepage", user=session["user_html_package"], vault=session["vault_info"])
+        return render_template('memory_upload.html', title="Homepage", user=session["user_info"], vault=session["vault_info"])

@@ -14,7 +14,7 @@ def index():
         vault_info["number_memories"] = VaultManagement.get_number_memories(user_id=session.get("user_id", None))
     session["vault_info"] = vault_info
 
-    return render_template("settings.html", user=session["user_html_package"], vault=session.get("vault_info", None))
+    return render_template("settings.html", user=session["user_info"], vault=session.get("vault_info", None))
 
 @settings_bp.route("/create_vault", methods=["POST"])
 def create_vault():
@@ -30,7 +30,7 @@ def create_vault():
 
             session["vault_info"] = VaultManagement.get_vault_info(session["user_id"])
 
-            return render_template("settings.html", user=session["user_html_package"], vault=session.get("vault_info", None))
+            return render_template("settings.html", user=session["user_info"], vault=session.get("vault_info", None))
         except Exception as e:
             raise e
             flash("Something went wrong", "error")

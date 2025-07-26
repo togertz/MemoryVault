@@ -18,7 +18,7 @@ def login():
 
         if user_id:
             session["user_id"] = user_id
-            session["user_html_package"] = UserManagement.get_user_json_package(user_id)
+            session["user_info"] = UserManagement.get_user_json_package(user_id)
             session["vault_info"] = VaultManagement.get_vault_info(user_id)
             flash(f"Successfully logged in", "success")
 
