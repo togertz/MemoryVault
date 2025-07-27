@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block content %}
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<style>
+    @media (max-width: 1000px) {
+        .memory-card { padding: 1rem 0.2rem; }
+        .memory-image { max-width: 98vw; }
+    }
+</style>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+{% if memory.latitude and memory.longitude %}
+    <script>
+            const latitude = {{memory.latitude|tojson}};
+            const longitude = {{memory.longitude|tojson}};
+    </script>
+{% endif %}
+<script src="{{ url_for('static', filename='slide.js') }}"></script>
+
+<div class="memory-card">
+    <div class="memory-nav-row">
+        <form method="get" action="{{ url_for('slideshow.start_slideshow') }}">
+            <input type="hidden" name="number" value="{{ memory.index|int - 1 }}">
+            <button class="memory-nav-btn" type="submit" {% if memory.index == 1 %}disabled{% endif %} title="Back">
+                ⬅️
+            </button>
+        </form>
+        <div class="memory-number">
+            {{ memory.index }} / {{ memory.number_memories }}
+        </div>
+        <form method="get" action="{{ url_for('slideshow.start_slideshow') }}">
+            <input type="hidden" name="number" value="{{ memory.index|int + 1 }}">
+            <button class="memory-nav-btn" type="submit" {% if memory.index == memory.number_memories %}disabled{% endif %} title="Back">
+                ➡️
+            </button>
+        </form>
+    </div>
+        <div class="memory-date">
+        {{ memory.date }}
+    </div>
+    {% if memory.image_b64 %}
+        <img class="memory-image" src="data:image/jpeg;base64,{{ memory.image_b64 }}" alt="Erinnerungsbild">
+    {% endif %}
+    <div class="memory-description">
+        {{ memory.description }}
+    </div>
+    {% if memory.latitude and memory.longitude %}
+        <div class="memory-coords">
+            📍 {{ memory.latitude }}, {{ memory.longitude }}
+        </div>
+        <div id="map"></div>
+        {% else %}
+    {% endif %}
+</div>
+
+{% endblock %}

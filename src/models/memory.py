@@ -19,5 +19,8 @@ class Memory(db.Model):
         return {
             "id": self.id,
             "description": self.description,
-            "date": self.date
+            "date": self.date,
+            "latitude": self.latitude,
+            "longitude": self.longitude,
+            "image_uri": self.image_uri
         }

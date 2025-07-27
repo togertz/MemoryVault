@@ -10,9 +10,16 @@
                 The Slideshow is now available! Check out the memories you collected in the last months!
             </div>
 
-            <form action="{{ url_for('slideshow.start_slideshow') }}" method="get">
+            <form action="{{ url_for('slideshow.start_slideshow') }}" method="post">
+                <label for="collection-period">Choose the Collection Period:</label>
+                <select class="dropdown" id="collection-period" name="collection-period" required>
+                    {% for period in slideshow_info.previous_periods %}
+                        <option value="{{period.period_start}}-{{period.period_end}}">{{period.period_start}} - {{period.period_end}}</option>
+                    {% endfor %}
+                </select>
+                <br>
                 <label for="presentation-order">Choose the order of the memories</label>
-                <select class="dropdown" id="presentation-order" name="presentation-order" required>
+                <select class="dropdown" id="presentation-order" name="order" required>
                     <option value="chronological">Chronological</option>
                     <option value="random">Random</option>
                     <option value="reverse-chronological">Reverse chronological</option>
@@ -26,7 +33,14 @@
             </div>
 
             {% if user.admin %}
-                <form action="{{ url_for('slideshow.start_slideshow') }}" method="get">
+                <form action="{{ url_for('slideshow.start_slideshow') }}" method="post">
+                    <label for="collection-period">Choose the Collection Period:</label>
+                    <select class="dropdown" id="collection-period" name="collection-period" required>
+                        {% for period in slideshow_info.previous_periods %}
+                            <p>period</p>
+                            <option value="{{period.period_start}}-{{period.period_end}}">{{period.period_start}} - {{period.period_end}}</option>
+                        {% endfor %}
+                    </select>
                     <label for="presentation-order">Choose the order of the memories</label>
                     <select class="dropdown" id="presentation-order" name="presentation-order" required>
                         <option value="chronological">Chronological</option>

@@ -1,9 +1,16 @@
 import os
+import enum
+import random
 from abc import ABC, abstractmethod
 from datetime import datetime
 from flask import current_app, session
 
 from ..models import db, Memory
+
+class SlideshowModes(enum.Enum):
+    CHRONOLOGICAL = "chronological"
+    RANDOM = "random"
+    REVERSE_CHRONOLOGICAL = "reverse-chronological"
 
 class MemoryManagement(ABC):
 
@@ -33,3 +40,26 @@ class MemoryManagement(ABC):
             save_path = os.path.join(current_app.config["UPLOAD_FOLDER"], filename)
             image_file.save(save_path)
             return filename
+
+    @staticmethod
+    def get_memory_data(id):
+        memory = Memory.query.filter_by(id=id).first()
+
+        return memory.to_json()
+
+    @staticmethod
+    def get_slideshow_order(vault_id, order:SlideshowModes, period_start, period_end):
+
+        query = Memory.query.filter_by(vault_id=vault_id)
+        query = query.filter(Memory.date.between(period_start, period_end))
+
+        memories = query.order_by(Memory.date.asc()).all()
+        memories_ids = [memory.id for memory in memories]
+
+        if order == SlideshowModes.CHRONOLOGICAL:
+            return memories_ids
+        elif order == SlideshowModes.RANDOM:
+            random.shuffle(memories_ids)
+            return memories_ids
+        elif order == SlideshowModes.REVERSE_CHRONOLOGICAL:
+            return memories_ids[::-1]

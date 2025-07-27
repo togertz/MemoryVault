@@ -40,6 +40,7 @@ class VaultManagement(ABC):
     @staticmethod
     def _get_start_end_curr_period(start_date, duration:CollectionPeriodDurationEnum):
         interval_months = duration.value
+
         today = datetime.today().date()
 
         while start_date + relativedelta(months=interval_months) <= today:
@@ -68,9 +69,33 @@ class VaultManagement(ABC):
         vault_info["curr_period_start"] = period_start_end["start_date"].strftime("%A, %b %d, %Y")
         vault_info["curr_period_end"] = period_start_end["end_date"].strftime("%A, %b %d, %Y")
         vault_info["days_left"] = (period_start_end["end_date"] - today).days
+        vault_info["slideshow_available"] = True#((period_start_end["start_date"] + timedelta(days=7)) > today) or (period_start_end["end_date"] == today)
 
         return vault_info
 
+    @staticmethod
+    def get_all_periods(user_id=None, vault_id=None):
+        vault = VaultManagement._get_vault(user_id=user_id, vault_id=vault_id)
+        vault_info = vault.json_package()
+
+        interval_monts = vault_info["period_duration"].value
+        periods = []
+
+        today = datetime.today().date()
+
+        current_start = vault_info["period_initial_start"]
+
+        while current_start <= today:
+            current_end = current_start + relativedelta(months=interval_monts) - timedelta(days=1)
+            last_day = calendar.monthrange(current_end.year, current_end.month)[1]
+            current_end = current_end.replace(day=last_day)
+            periods.append({
+                "period_start": current_start.strftime("%A, %b %d, %Y"),
+                "period_end": current_end.strftime("%A, %b %d, %Y")
+            })
+            current_start = current_start + relativedelta(months=interval_monts)
+
+        return periods
 
     @staticmethod
     def get_vault_info(user_id=None, vault_id=None):
