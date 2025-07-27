@@ -3,37 +3,38 @@
 {% block content %}
 <script src="{{ url_for('static', filename='register.js') }}"></script>
 
-<h1>Lege einen neuen User an</h1>
 
-<div class="form user-login">
+<div class="container">
+    <h1 class="mb-2 mt-4">Lege einen neuen User an</h1>
+
     <form action="{{ url_for('user.register') }}" method="post">
-        <div class="form-element">
-            <input type="text" name="username" id="username" placeholder="Username*" required>
-            <div id="form-warning-username" class="form-warning"></div>
+        <div class="mb-3">
+            <input class="form-control" type="text" name="username" id="username" placeholder="Username*" required>
+            <div id="form-warning-username" class="alert alert-dismissible fade show p-0"></div>
         </div>
-        <div class="form-element password">
-            <input type="password" name="password" id="password" placeholder="Password*" required>
+        <div class="mb-3 password">
+            <input class="form-control" type="password" name="password" id="password" placeholder="Password*" required>
         </div>
-        <div class="form-element password">
-            <input type="password" name="password-repeat" id="password-repeat" placeholder="Repeat password*" required>
-            <div id="form-warning-password" class="form-warning"></div>
+        <div class="mb-3 password">
+            <input class="form-control" type="password" name="password-repeat" id="password-repeat" placeholder="Repeat password*" required>
+            <div id="form-warning-password" class="alert alert-dismissible fade show p-0"></div>
         </div>
-        <div class="form-element">
-            <input type="text" name="firstname" id="firstname" placeholder="Firstname*" required>
+        <div class="mb-3">
+            <input class="form-control" type="text" name="firstname" id="firstname" placeholder="Firstname*" required>
         </div>
-        <div class="form-element">
-            <input type="text" name="lastname" id="lastname" placeholder="Lastname*" required>
+        <div class="mb-3">
+            <input class="form-control" type="text" name="lastname" id="lastname" placeholder="Lastname*" required>
         </div>
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% for category, message in messages %}
-                <div class="alert alert-{{ category }}">{{ message }}</div>
+                <div class="alert alert-warning fade show">{{ message }}</div>
             {% endfor %}
         {% endwith %}
-        <div class="form-element nexto">
-            <label for="lastname">Birthday*</label>
-            <input type="date" name="birthday" id="birthday" required>
+        <div class="mb-3">
+            <label class="form-label" for="lastname">Birthday*</label>
+            <input class="form-control" type="date" name="birthday" id="birthday" required>
         </div>
-        <button id="register-btn" class="button" type="submit">Register</button>
+        <button id="register-btn" class="btn btn-primary w-100 mb-4" type="submit">Register</button>
     </form>
 </div>
 {% endblock %}

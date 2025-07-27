@@ -2,30 +2,34 @@
 
 {% block content %}
 
-<h1> Login </h1>
 
-<div class="form user-login">
-    {% if register %}
-        <div class="alert alert-success">User was created. Please login:</div>
-    {% endif %}
-    <form action="{{ url_for('user.login') }}" method="post">
-        <div class="form-element">
-            <input type="text" name="username" placeholder="Username" value="{{ username_value }}" required>
+<div class="container">
+    <h1 class="mt-4 mb-2"> Login </h1>
+    <div class="row justify-content-center">
+        {% if register %}
+            <div class="alert alert-info fade show">User was created. Please login:</div>
+        {% endif %}
+
+        <form action="{{ url_for('user.login') }}" method="post">
+            <div class="mb-3">
+                <input class="form-control" type="text" name="username" placeholder="Username" value="{{ username_value }}" required>
+            </div>
+            <div class="mb-3">
+                <input class="form-control" type="password" name="password" placeholder="Password" required>
+            </div>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% for category, message in messages %}
+                    <div class="alert alert-warning fade show">{{ message }}</div>
+                {% endfor %}
+            {% endwith %}
+            <button class="btn btn-primary w-100" class="button" type="submit">Login</button>
+        </form>
+        <div class="text-center mt-3 mb-4">
+            <span>No account yet?</span>
+            <a class="btn btn-link p-0 align-baseline" href="{{ url_for('user.register') }}">Create an account</a>
         </div>
-        <div class="form-element">
-            <input type="password" name="password" placeholder="Password" required>
-        </div>
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% for category, message in messages %}
-                <div class="alert alert-{{ category }}">{{ message }}</div>
-            {% endfor %}
-        {% endwith %}
-        <button class="button" type="submit">Login</button>
-    </form>
-    <div class="nexto">
-        <p>No account yet?
-        <a href="{{ url_for('user.register') }}" class="link-button">Create an account</a>
     </div>
+
 </div>
 
 {% endblock %}

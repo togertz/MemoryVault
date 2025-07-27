@@ -3,70 +3,71 @@
 {% block content %}
 <script src="{{ url_for('static', filename='settings.js') }}"></script>
 
-{% with messages = get_flashed_messages(with_categories=true) %}
-    {% for category, message in messages %}
-        <div class="alert alert-{{ category }}">{{ message }}</div>
-    {% endfor %}
-{% endwith %}
+<div class="container mt-4">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+            <div class="alert alert-warning fade show">{{ message }}</div>
+        {% endfor %}
+    {% endwith %}
 
-<div class="elem">
-    <h1>Vault Settings:</h1>
+    <h1 class="mb-2">Vault Settings:</h1>
+
     {% if vault %}
-    <table class="information-table">
+    <table class="table table-bordered table-striped">
         <tbody>
             <tr>
-                <td>Number of Memories in current Vault</td>
+                <th scope="row">Number of Memories in current Vault</th>
                 <td>{{ vault.number_memories }}</td>
             </tr>
             <tr>
-                <td>Days remaining in the collection period</td>
+                <th scope="row">Days remaining in the collection period</th>
                 <td>{{ vault.days_left }}</td>
             </tr>
             <tr>
-                <td>Duration of Collection Period</td>
+                <th scope="row">Duration of Collection Period</th>
                 <td>{{ vault.period_duration }} Month(s)</td>
             </tr>
             <tr>
-                <td>End of current Collection Period</td>
+                <th scope="row">End of current Collection Period</th>
                 <td>{{ vault.curr_period_end }}</td>
             </tr>
         </tbody>
     </table>
+    <div>
+        <form action="{{ url_for('memory.upload') }}" method="get">
+                <button id="register-btn" class="btn btn-secondary w-100 mb-4" type="submit">Go to memory upload</button>
+        </form>
+    </div>
     {% else %}
         <div id="create-vault">
             <div class="alert alert-warning">Please create a vault to upload memories.</div>
-            <h3>Please create a vault for your account:</h3>
+            <h3 class="mb-2">Please create a vault for your account:</h3>
             <form action="{{ url_for('settings.create_vault') }}" method="POST">
-                <div class="form-element">
-                    <label for="duration">Duration of each Collection Period</label>
-                    <select class="dropdown" id="collection-period-duration" name="duration" required>
+                <div class="mb-3">
+                    <label class="form-label" for="duration">Duration of each Collection Period</label>
+                    <select class="form-select" class="dropdown" id="collection-period-duration" name="duration" required>
                         <option value="1">Monthly</option>
                         <option value="3">Quarterly</option>
                         <option value="6">Half-yearly</option>
                         <option value="12">Yearly</option>
                     </select>
                 </div>
-                <div class="form-element" id="collection-period-start-div" style="visibility: hidden;">
-                    <label for="start">Start of first Collection Period</label>
-                    <select class="dropdown" id="collection-period-start" name="start" required>
+                <div class="mb-3" id="collection-period-start-div" style="visibility: hidden;">
+                    <label class="form-label" for="start">Start of first Collection Period</label>
+                    <select class="form-select" id="collection-period-start" name="start" required>
                     </select>
                 </div>
-                <div class="information-field" id="period-end-info">
+                <div class="form-text mb-2" id="period-end-info">
                 </div>
-                <div class="information-field">
+                <div class="form-text mb-2">
                     The duration and end of periods cannot be changed later.
                 </div>
-                <button id="register-btn" class="button" type="submit">Create Vault</button>
+                <button id="register-btn" class="btn btn-primary w-100 mb-4" type="submit">Create Vault</button>
             </form>
         </div>
     {% endif %}
-    <div>
-        <form action="{{ url_for('memory.upload') }}" method="get">
-                <button id="register-btn" class="button" type="submit">Go to memory upload</button>
-        </form>
-    </div>
 </div>
 <div class="elem">
-    <h1>Family Settings:</h1>
+    <h1 class="mb-2">Family Settings:</h1>
 </div>
 {% endblock %}

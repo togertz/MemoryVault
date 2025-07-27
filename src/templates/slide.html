@@ -3,12 +3,6 @@
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-<style>
-    @media (max-width: 1000px) {
-        .memory-card { padding: 1rem 0.2rem; }
-        .memory-image { max-width: 98vw; }
-    }
-</style>
 
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 {% if memory.latitude and memory.longitude %}
@@ -19,38 +13,61 @@
 {% endif %}
 <script src="{{ url_for('static', filename='slide.js') }}"></script>
 
-<div class="memory-card">
-    <div class="memory-nav-row">
-        <form method="get" action="{{ url_for('slideshow.start_slideshow') }}">
-            <input type="hidden" name="number" value="{{ memory.index|int - 1 }}">
-            <button class="memory-nav-btn" type="submit" {% if memory.index == 1 %}disabled{% endif %} title="Back">
-                ⬅️
-            </button>
-        </form>
-        <div class="memory-number">
-            {{ memory.index }} / {{ memory.number_memories }}
+<div class="container mt-4">
+    <div class="row justify-content-center align-items-center mb-3">
+        <div class="col-auto">
+            <form method="get" action="{{ url_for('slideshow.start_slideshow') }}">
+                <input type="hidden" name="number" value="{{ memory.index|int - 1 }}">
+                <button class="btn btn-outline-primary" type="submit" {% if memory.index == 1 %}disabled{% endif %} title="Back">
+                    ⬅️
+                </button>
+            </form>
         </div>
-        <form method="get" action="{{ url_for('slideshow.start_slideshow') }}">
-            <input type="hidden" name="number" value="{{ memory.index|int + 1 }}">
-            <button class="memory-nav-btn" type="submit" {% if memory.index == memory.number_memories %}disabled{% endif %} title="Back">
-                ➡️
-            </button>
-        </form>
+        <div class="col-auto">
+            <span class="fs-5">{{ memory.index }} / {{ memory.number_memories }}</span>
+        </div>
+        <div class="col-auto">
+            <form method="get" action="{{ url_for('slideshow.start_slideshow') }}">
+                <input type="hidden" name="number" value="{{ memory.index|int + 1 }}">
+                <button class="btn btn-outline-primary" type="submit" {% if memory.index == memory.number_memories %}disabled{% endif %} title="Back">
+                    ➡️
+                </button>
+            </form>
+        </div>
     </div>
-        <div class="memory-date">
-        {{ memory.date }}
+
+    <div class="row justify-content-center mb-2">
+        <div class="col-auto text-muted">
+            {{ memory.date }}
+        </div>
     </div>
+
     {% if memory.image_b64 %}
-        <img class="memory-image" src="data:image/jpeg;base64,{{ memory.image_b64 }}" alt="Erinnerungsbild">
-    {% endif %}
-    <div class="memory-description">
-        {{ memory.description }}
-    </div>
-    {% if memory.latitude and memory.longitude %}
-        <div class="memory-coords">
-            📍 {{ memory.latitude }}, {{ memory.longitude }}
+    <div class="row justify-content-center mb-3">
+        <div class="col-md-8 text-center">
+            <img class="img-fluid rounded shadow" src="data:image/jpeg;base64,{{ memory.image_b64 }}" alt="Erinnerungsbild">
         </div>
-        <div id="map"></div>
+    </div>
+    {% endif %}
+
+    <div class="row justify-content-center mb-2">
+        <div class="col-md-8">
+            <div class="p-3 bg-light rounded border">
+                {{ memory.description }}
+            </div>
+        </div>
+    </div>
+
+    {% if memory.latitude and memory.longitude %}
+        <div class="row justify-content-center mb-2">
+            <div class="col-md-8">
+                <div class="mb-2">
+                    <span class="text-secondary">📍 {{ memory.latitude }}, {{ memory.longitude }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div id="map" class="rounded shadow-sm mb-4" style="height: 300px;"></div>
         {% else %}
     {% endif %}
 </div>

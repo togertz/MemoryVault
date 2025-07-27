@@ -2,52 +2,51 @@
 
 {% block content %}
 
-<div class="elem">
-    <h1>Slideshow</h1>
+<div class="container">
+    <h1 class="mb-2">Slideshow</h1>
     {% if slideshow_info %}
         {% if slideshow_info.available %}
-            <div class="information-field">
+            <div class="alert alert-info">
                 The Slideshow is now available! Check out the memories you collected in the last months!
             </div>
 
             <form action="{{ url_for('slideshow.start_slideshow') }}" method="post">
-                <label for="collection-period">Choose the Collection Period:</label>
-                <select class="dropdown" id="collection-period" name="collection-period" required>
+                <label class="form-label" for="collection-period">Choose the Collection Period:</label>
+                <select class="form-select mb-4" id="collection-period" name="collection-period" required>
                     {% for period in slideshow_info.previous_periods %}
                         <option value="{{period.period_start}}-{{period.period_end}}">{{period.period_start}} - {{period.period_end}}</option>
                     {% endfor %}
                 </select>
-                <br>
-                <label for="presentation-order">Choose the order of the memories</label>
-                <select class="dropdown" id="presentation-order" name="order" required>
+                <label class="form-label" for="presentation-order">Choose the order of the memories</label>
+                <select class="form-select  mb-4" id="presentation-order" name="order" required>
                     <option value="chronological">Chronological</option>
                     <option value="random">Random</option>
                     <option value="reverse-chronological">Reverse chronological</option>
                 </select>
-                <button id="admin-btn" class="button" type="submit">Access slideshow</button>
+                <button id="admin-btn" class="btn btn-primary w-100 mb-4" type="submit">Access slideshow</button>
             </form>
         {% else %}
-            <div class="information-field">
+            <div class="alert alert-info">
                 The Slideshow will be available in {{ slideshow_info.days_left }} days.
                 Keep uploading fond memories and come back once your Collection Period ends on {{ slideshow_info.period_end }}.
             </div>
 
             {% if user.admin %}
                 <form action="{{ url_for('slideshow.start_slideshow') }}" method="post">
-                    <label for="collection-period">Choose the Collection Period:</label>
-                    <select class="dropdown" id="collection-period" name="collection-period" required>
+                    <label class="form-label" for="collection-period">Choose the Collection Period:</label>
+                    <select class="form-select mb-4" id="collection-period" name="collection-period" required>
                         {% for period in slideshow_info.previous_periods %}
                             <p>period</p>
                             <option value="{{period.period_start}}-{{period.period_end}}">{{period.period_start}} - {{period.period_end}}</option>
                         {% endfor %}
                     </select>
-                    <label for="presentation-order">Choose the order of the memories</label>
-                    <select class="dropdown" id="presentation-order" name="presentation-order" required>
+                    <label class="form-label" for="presentation-order">Choose the order of the memories</label>
+                    <select class="form-select mb-4" id="presentation-order" name="presentation-order" required>
                         <option value="chronological">Chronological</option>
                         <option value="random">Random</option>
                         <option value="reverse-chronological">Reverse chronological</option>
                     </select>
-                    <button id="admin-btn" class="button" type="submit">Access slideshow with admin privileges</button>
+                    <button id="admin-btn" class="btn btn-primary w-100 mb-4" type="submit">Access slideshow with admin privileges</button>
                 </form>
             {% endif %}
         {% endif %}

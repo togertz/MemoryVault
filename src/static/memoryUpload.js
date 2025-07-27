@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", async function () {
     const imageUpload = document.getElementById("imageUpload");
-    const imagePreview = document.getElementById("imagePreview");
-    const imageLabel = document.getElementById("image-label");
+    const previewImg = document.getElementById("previewImg");
+    const removeImageBtn = document.getElementById("removeImageBtn");
 
     const convert_to_base64 = file => new Promise((response) => {
         const fileReader = new FileReader();
@@ -11,8 +11,20 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     imageUpload.addEventListener('change', async function () {
         const file = imageUpload.files;
-        const img = await convert_to_base64(file[0]);
-        imageLabel.style.backgroundImage = `url(${img})`;
+        if (file && file[0]) {
+            const img = await convert_to_base64(file[0]);
+            previewImg.src = img;
+            previewImg.style.display = 'block';
+        } else {
+            previewImg.src = '';
+            previewImg.style.display = 'none';
+        }
+    });
+
+    removeImageBtn.addEventListener('click', function () {
+        imageUpload.value = '';
+        previewImg.src = '';
+        previewImg.style.display = 'none';
     });
 
     // MAP

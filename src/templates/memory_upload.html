@@ -1,60 +1,81 @@
 {% extends "base.html" %}
 {% block content %}
+<!-- Leaflet Map CSS and JS -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
-
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<!-- Custom Script for Upload -->
 <script src="{{ url_for('static', filename='memoryUpload.js') }}"></script>
 
-<div class="elem">
-    {% if user %}
-        <h1>Hello {{ user.firstname }}! </h1>
-        <h2>Upload a new Memory to your Vault</h2>
-    {% else %}
-        <h1> Upload a new Memory</h1>
-    {% endif %}
-    {% if vault %}
-        <div class="information-field">
-            You have {{ vault.days_left }} days remaining in your Collection Period.
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10 mt-4">
+            <!-- Header -->
+            {% if user %}
+                <h1 class="mb-2">Hello {{ user.firstname }}! </h1>
+                <h2 class="mb-4">Upload a new Memory to your Vault</h2>
+            {% else %}
+                <h1 class="mb-4"> Upload a new Memory</h1>
+            {% endif %}
+            {% if vault %}
+                <div class="alert alert-info mb-4 rounded-pill">
+                    ℹ️ You have {{ vault.days_left }} days remaining in your Collection Period.
+                </div>
+            {% endif %}
+            <br>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% for category, message in messages %}
+                    <div class="alert alert-warning fade show" role="alert">{{ message }}</div>
+                {% endfor %}
+            {% endwith %}
+
+            <!-- Form for Memory Upload -->
+            <form action="{{ url_for('memory.upload') }}" enctype="multipart/form-data" method="post">
+                <div class="mb-3">
+                    <label class="form-label" for="date">Date of Memory*</label>
+                    <input class="form-control" type="date" name="date" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label" for="description">Description*</label>
+                    <textarea class="form-control" name="description" cols="40" rows="10"></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label" for="imageUpload">Image</label>
+                    <div class="input-group">
+                        <input class="form-control" type="file" id="imageUpload" name="image" accept="image/*">
+                        <button type="button" class="btn btn-outline-danger" id="removeImageBtn" title="Remove image">&times;</button>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <div class="preview-container" id="imagePreview">
+                        <img class="img-fluid rounded shadow-sm" id="previewImg" src="" alt="Image Preview" style="display:none;">
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label" for="map-search">Search for location:</label>
+                    <input class="form-control mb-2" type="text" id="map-search"><br>
+
+                    <div class="row g-2">
+                        <div class="col">
+                            <input class="form-control" type="number" id="latitude" name="latitude" step="any" placeholder="Latitude" readonly>
+                        </div>
+                        <div class="col">
+                            <input class="form-control" type="number" id="longitude" name="longitude" step="any" placeholder="Longitude" readonly>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <div id="map" class="rounded shadow-sm" style="height: 300px;"></div>
+                </div>
+
+                <button class="btn btn-primary w-100 mb-4" type="submit">Upload</button>
+            </form>
         </div>
-    {% endif %}
-    <br>
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% for category, message in messages %}
-            <div class="alert alert-{{ category }}">{{ message }}</div>
-        {% endfor %}
-    {% endwith %}
-    <form action="{{ url_for('memory.upload') }}" enctype="multipart/form-data" method="post">
-        <div class="form-element">
-            <label for="date">Date of Memory*</label>
-            <input type="date" name="date" required>
-        </div>
+    </div>
 
-        <div class="form-element">
-            <label for="description">Description*</label>
-            <textarea name="description" cols="40" rows="10"></textarea>
-        </div>
-
-        <div class="form-element">
-            <label>Image</label>
-            <input type="file" id="imageUpload" name="image" accept="image/*" style="display: none;">
-            <label id="image-label" for="imageUpload">Choose image to upload</label>
-        </div>
-
-        <div class="preview-container" id="imagePreview">
-            <img id="previewImg" src="" alt="Image Preview">
-        </div>
-
-        <label for="map-search">Search for location:</label>
-        <input type="text" id="map-search"><br>
-
-        <label for="latitude">📍</label>
-        <input type="number" id="latitude" name="latitude" step="any" placeholder="Latitude" readonly>
-        <input type="number" id="longitude" name="longitude" step="any" placeholder="Longitude" readonly>
-
-        <div id="map"></div>
-
-        <button class="button" type="submit">Upload</button>
-    </form>
 </div>
 
 {% endblock %}
