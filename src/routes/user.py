@@ -10,7 +10,7 @@ def login():
         return redirect(url_for("memory.upload"))
 
     if request.method == "POST":
-        username = request.form.get("username")
+        username = request.form.get("username").lower()
         password = request.form.get("password")
 
         user_id = UserManagement.check_login(username=username,
