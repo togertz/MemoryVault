@@ -44,6 +44,10 @@ def start_slideshow():
                                                                 period_start=period_start,
                                                                 period_end=period_end)
 
+        if len(session["slideshow_order"]) <= 0:
+            flash("No memories were found for this collection period")
+            return redirect(url_for("slideshow.index"))
+
         current_memory = 1
     elif request.method == "GET":
         current_memory = int(request.args.get("number", 1))
