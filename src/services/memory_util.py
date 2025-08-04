@@ -1,7 +1,7 @@
 import os
 import enum
 import random
-from abc import ABC, abstractmethod
+from abc import ABC
 from datetime import datetime
 from flask import current_app, session
 
@@ -38,15 +38,16 @@ class MemoryManagement(ABC):
         if current_app.config["USE_S3"]:
             pass
         else:
-            filename = f'{session["user_id"]}_{datetime.strftime(datetime.now(), "%Y_%m_%d-%H_%M_%S")}.jpg'
+            filename = f'{session["user_id"]}_{datetime.strftime(
+                datetime.now(), "%Y_%m_%d-%H_%M_%S")}.jpg'
             save_path = os.path.join(
                 current_app.config["UPLOAD_FOLDER"], filename)
             image_file.save(save_path)
             return filename
 
     @staticmethod
-    def get_memory_data(id):
-        memory = Memory.query.filter_by(id=id).first()
+    def get_memory_data(memory_id):
+        memory = Memory.query.filter_by(id=memory_id).first()
 
         return memory.to_json()
 
@@ -66,3 +67,5 @@ class MemoryManagement(ABC):
             return memories_ids
         elif order == SlideshowModes.REVERSE_CHRONOLOGICAL:
             return memories_ids[::-1]
+
+        return memories_ids

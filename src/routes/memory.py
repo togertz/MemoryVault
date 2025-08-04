@@ -14,21 +14,35 @@ def upload():
         return redirect(url_for("settings.index"))
 
     if request.method == "GET":
-        return render_template('memory_upload.html', title="Homepage", user=session["user_info"], vault=session.get("vault_info", None))
+        return render_template('memory_upload.html',
+                               title="Homepage",
+                               user=session["user_info"],
+                               vault=session.get("vault_info", None))
 
     if request.method == "POST":
+        vault_id = None
         if request.form["vault"] == "own_vault":
             if not session.get("vault_info", False):
                 flash(
-                    "Memory could not be uploaded. You cannot upload memories to your own vault.", "warning")
-                return render_template('memory_upload.html', title="Homepage", user=session["user_info"], vault=session.get("vault_info", None))
+                    "Memory could not be uploaded.\
+                          You cannot upload memories to your own vault.",
+                    "warning")
+                return render_template('memory_upload.html',
+                                       title="Homepage",
+                                       user=session["user_info"],
+                                       vault=session.get("vault_info", None))
 
             vault_id = session.get("vault_info")["vault_id"]
         elif request.form["vault"] == "family_vault":
             if not session.get("family_vault_info", False):
                 flash(
-                    "Memory could not be uploaded. You cannot upload memories to your own vault.", "warning")
-                return render_template('memory_upload.html', title="Homepage", user=session["user_info"], vault=session.get("vault_info", None))
+                    "Memory could not be uploaded.\
+                          You cannot upload memories to your own vault.",
+                    "warning")
+                return render_template('memory_upload.html',
+                                       title="Homepage",
+                                       user=session["user_info"],
+                                       vault=session.get("vault_info", None))
 
             vault_id = session.get("family_vault_info")["vault_id"]
 
@@ -42,4 +56,7 @@ def upload():
                                        image_file=request.files.get("image"),
                                        vault_id=vault_id)
 
-        return render_template('memory_upload.html', title="Homepage", user=session["user_info"], vault=session["vault_info"])
+        return render_template('memory_upload.html',
+                               title="Homepage",
+                               user=session["user_info"],
+                               vault=session["vault_info"])

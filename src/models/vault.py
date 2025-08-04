@@ -1,8 +1,9 @@
-from .base import db
 import enum
 from datetime import date
 from sqlalchemy import Enum
 from sqlalchemy.sql import func
+
+from .base import db
 
 
 class CollectionPeriodDurationEnum(enum.Enum):

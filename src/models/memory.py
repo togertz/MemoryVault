@@ -1,5 +1,6 @@
-from .base import db
 from sqlalchemy.sql import func
+
+from .base import db
 
 
 class Memory(db.Model):

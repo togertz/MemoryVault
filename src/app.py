@@ -6,14 +6,14 @@ from flask_bcrypt import Bcrypt
 load_dotenv()
 
 if os.getenv("FLASK_ENV") == "production":
-    config_class = 'src.config.ProductionConfig'
+    CONFIG_CLASS = 'src.config.ProductionConfig'
 else:
-    config_class = 'src.config.DevelopmentConfig'
+    CONFIG_CLASS = 'src.config.DevelopmentConfig'
 
 bcrypt_app = Bcrypt()
 
 
-def create_app(config_class=config_class):
+def create_app(config_class=CONFIG_CLASS):
     app = Flask(__name__)
     bcrypt_app.init_app(app)
     app.config.from_object(config_class)

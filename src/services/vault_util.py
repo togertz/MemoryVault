@@ -41,6 +41,7 @@ class VaultManagement(ABC):
             raise ValueError(
                 "Either user_id, family_id, or vault_id have to be filled")
 
+        vault = None
         if user_id:
             user = User.query.filter_by(id=user_id).first()
             vault = user.vault
@@ -89,7 +90,6 @@ class VaultManagement(ABC):
         vault_info["curr_period_end"] = period_start_end["end_date"].strftime(
             "%A, %b %d, %Y")
         vault_info["days_left"] = (period_start_end["end_date"] - today).days
-        # ((period_start_end["start_date"] + timedelta(days=7)) > today) or (period_start_end["end_date"] == today)
         vault_info["slideshow_available"] = True
 
         return vault_info
@@ -138,11 +138,10 @@ class VaultManagement(ABC):
             user_id=user_id, vault_id=vault_id, family_id=family_id)
         vault_info = VaultManagement._get_vault_info(vault=vault)
 
-        if type(vault_info["curr_period_start"]) == str:
-            timespan_begin = datetime.strptime(
-                vault_info["curr_period_start"], "%A, %b %d, %Y").date()
-            timespan_end = datetime.strptime(
-                vault_info["curr_period_end"], "%A, %b %d, %Y").date()
+        timespan_begin = datetime.strptime(
+            vault_info["curr_period_start"], "%A, %b %d, %Y").date()
+        timespan_end = datetime.strptime(
+            vault_info["curr_period_end"], "%A, %b %d, %Y").date()
 
         return vault.get_number_of_memories_in_timespan(timespan_begin=timespan_begin,
                                                         timespan_end=timespan_end)

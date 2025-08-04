@@ -1,7 +1,8 @@
 import os
 import base64
 from datetime import datetime
-from flask import Blueprint, render_template, request, session, redirect, url_for, flash, current_app
+from flask import Blueprint, render_template, \
+    request, session, redirect, url_for, flash, current_app
 
 from ..services import MemoryManagement, SlideshowModes, VaultManagement
 
@@ -14,23 +15,21 @@ def index():
         flash("Please login first", "warning")
         return redirect(url_for("user.login"))
 
-    today = datetime.now().date()
-
     vault_slideshow_available = False
     vault_collection_periods = None
     if session.get("vault_info", False):
         vault_collection_periods = VaultManagement.get_all_periods(
             vault_id=session["vault_info"]["vault_id"])
-        vault_slideshow_available = len(
-            vault_collection_periods) > 0 if session["user_info"]["admin"] else len(vault_collection_periods) > 1
+        vault_slideshow_available = len(vault_collection_periods) > 0\
+            if session["user_info"]["admin"] else len(vault_collection_periods) > 1
 
     family_slideshow_available = False
     family_collection_periods = None
     if session.get("family_vault_info", False):
         family_collection_periods = VaultManagement.get_all_periods(
             vault_id=session["family_vault_info"]["vault_id"])
-        family_slideshow_available = len(
-            family_collection_periods) > 0 if session["user_info"]["admin"] else len(family_collection_periods) > 1
+        family_slideshow_available = len(family_collection_periods) > 0\
+            if session["user_info"]["admin"] else len(family_collection_periods) > 1
 
     slideshow_info = {
         "available": vault_slideshow_available or family_slideshow_available
@@ -58,7 +57,9 @@ def index():
     else:
         slideshow_info["family"] = None
 
-    return render_template("slideshow.html", user=session["user_info"], slideshow_info=slideshow_info)
+    return render_template("slideshow.html",
+                           user=session["user_info"],
+                           slideshow_info=slideshow_info)
 
 
 @slideshow_bp.route('/run', methods=["GET", "POST"])
@@ -73,6 +74,7 @@ def start_slideshow():
             return redirect(url_for("slideshow.index"))
 
     if request.method == "POST":
+        vault_id = None
         if request.form.get("vault") == "own_vault":
             vault_id = session["vault_info"]["vault_id"]
         elif request.form.get("vault") == "family_vault":
@@ -103,7 +105,7 @@ def start_slideshow():
             current_memory = 1
 
     memory_data = MemoryManagement.get_memory_data(
-        id=session["slideshow_order"][current_memory - 1])
+        memory_id=session["slideshow_order"][current_memory - 1])
     image_b64 = None
 
     if memory_data["image_uri"]:

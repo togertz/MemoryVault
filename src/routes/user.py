@@ -25,21 +25,23 @@ def login():
 
             if session["user_info"].get("family_id", False):
                 session["family_vault_info"] = {
-                    **UserManagement.get_family_info(session["user_info"].get("family_id", False)),
-                    **VaultManagement.get_vault_info(family_id=session["user_info"].get("family_id", None)),
-                    "number_memories": VaultManagement.get_number_memories(family_id=session["user_info"].get("family_id", False))
+                    **UserManagement.get_family_info(
+                        session["user_info"].get("family_id", False)),
+                    **VaultManagement.get_vault_info(
+                        family_id=session["user_info"].get("family_id", None)),
+                    "number_memories": VaultManagement.get_number_memories(
+                        family_id=session["user_info"].get("family_id", False))
                 }
 
-            flash(f"Successfully logged in", "info")
+            flash("Successfully logged in", "info")
 
             return redirect(url_for("memory.upload"))
 
+        if UserManagement.username_taken(username=username):
+            flash("Wrong password", "warning")
         else:
-            if UserManagement.username_taken(username=username):
-                flash("Wrong password", "warning")
-            else:
-                flash("User does not exist", "warning")
-            return render_template("login.html", title="Login", username_value=username)
+            flash("User does not exist", "warning")
+        return render_template("login.html", title="Login", username_value=username)
 
     if request.method == "GET":
         return render_template('login.html', title="Login")

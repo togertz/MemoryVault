@@ -1,0 +1,9 @@
+[MESSAGES CONTROL]
+# Deactivate rules:
+# R0903: Too few public methods
+# E1102: not callable
+# W9718: Catching too general exception Exception
+# R1710: Either all return statements in a function should return an expression, or none of them should.
+# R0913: Too many arguments
+# R0917: Too many positional arguments
+disable=R0903,E1102,W0718,R1710,R0913,R0917

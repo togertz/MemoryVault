@@ -87,10 +87,10 @@ class UserManagement(ABC):
 
         user = User.query.filter_by(username=username).first()
 
-        validLogin = bcrypt_app.check_password_hash(
+        valid_login = bcrypt_app.check_password_hash(
             user.password_hash, password)
 
-        return user.id if validLogin else None
+        return user.id if valid_login else None
 
     @staticmethod
     def get_user_json_package(user_id):

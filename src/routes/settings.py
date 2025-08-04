@@ -23,11 +23,14 @@ def index():
         if session["user_info"].get("family_id", False):
             family_info = session.get("family_vault_info")
 
-        return render_template("settings.html", user=session["user_info"], vault=vault_info, family_vault=family_info)
+        return render_template("settings.html",
+                               user=session["user_info"],
+                               vault=vault_info,
+                               family_vault=family_info)
 
-    except Exception as e:
+    except Exception:
         message = "Please contact an admin to get furhter insights into this error."
-        if True:  # session.get("user_info").get("io_admin"):
+        if session.get("user_info").get("io_admin"):
             message = traceback.format_exc()
         return render_template("base.html", user=session["user_info"], error=message)
 
@@ -53,10 +56,12 @@ def create_vault():
                 session["user_id"])
 
             return redirect(url_for("settings.index"))
-        except Exception as e:
-            raise e
+        except Exception:
             flash("Something went wrong", "error")
-            return render_template("settings.html", user=session["user_id"], vault=session.get("vault_info", None), family=session.get("family_vault_info", None))
+            return render_template("settings.html",
+                                   user=session["user_id"],
+                                   vault=session.get("vault_info", None),
+                                   family=session.get("family_vault_info", None))
 
 
 @settings_bp.route("/join_family", methods=["POST"])
