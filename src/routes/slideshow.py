@@ -7,6 +7,7 @@ from ..services import MemoryManagement, SlideshowModes, VaultManagement
 
 slideshow_bp = Blueprint('slideshow', __name__, url_prefix='/slideshow')
 
+
 @slideshow_bp.route('/', methods=["GET"])
 def index():
     if not session.get("user_id", False):
@@ -18,14 +19,18 @@ def index():
     vault_slideshow_available = False
     vault_collection_periods = None
     if session.get("vault_info", False):
-        vault_collection_periods = VaultManagement.get_all_periods(vault_id=session["vault_info"]["vault_id"])
-        vault_slideshow_available = len(vault_collection_periods) > 0 if session["user_info"]["admin"] else len(vault_collection_periods) > 1
+        vault_collection_periods = VaultManagement.get_all_periods(
+            vault_id=session["vault_info"]["vault_id"])
+        vault_slideshow_available = len(
+            vault_collection_periods) > 0 if session["user_info"]["admin"] else len(vault_collection_periods) > 1
 
     family_slideshow_available = False
     family_collection_periods = None
     if session.get("family_vault_info", False):
-        family_collection_periods = VaultManagement.get_all_periods(vault_id=session["family_vault_info"]["vault_id"])
-        family_slideshow_available = len(family_collection_periods) > 0 if session["user_info"]["admin"] else len(family_collection_periods) > 1
+        family_collection_periods = VaultManagement.get_all_periods(
+            vault_id=session["family_vault_info"]["vault_id"])
+        family_slideshow_available = len(
+            family_collection_periods) > 0 if session["user_info"]["admin"] else len(family_collection_periods) > 1
 
     slideshow_info = {
         "available": vault_slideshow_available or family_slideshow_available
@@ -55,6 +60,7 @@ def index():
 
     return render_template("slideshow.html", user=session["user_info"], slideshow_info=slideshow_info)
 
+
 @slideshow_bp.route('/run', methods=["GET", "POST"])
 def start_slideshow():
     print(request.form)
@@ -78,9 +84,9 @@ def start_slideshow():
         period_end = datetime.strptime(period[1], "%A, %b %d, %Y").date()
 
         session["slideshow_order"] = MemoryManagement.get_slideshow_order(vault_id=vault_id,
-                                                                order=order,
-                                                                period_start=period_start,
-                                                                period_end=period_end)
+                                                                          order=order,
+                                                                          period_start=period_start,
+                                                                          period_end=period_end)
 
         if len(session["slideshow_order"]) <= 0:
             flash("No memories were found for this collection period", "warning")
@@ -96,11 +102,13 @@ def start_slideshow():
         elif current_memory < 1:
             current_memory = 1
 
-    memory_data = MemoryManagement.get_memory_data(id=session["slideshow_order"][current_memory - 1])
+    memory_data = MemoryManagement.get_memory_data(
+        id=session["slideshow_order"][current_memory - 1])
     image_b64 = None
 
     if memory_data["image_uri"]:
-        image_path = os.path.join(current_app.config["UPLOAD_FOLDER"], memory_data["image_uri"])
+        image_path = os.path.join(
+            current_app.config["UPLOAD_FOLDER"], memory_data["image_uri"])
 
         with open(image_path, "rb") as img_file:
             image_b64 = base64.b64encode(img_file.read()).decode("utf-8")

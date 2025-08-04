@@ -1,6 +1,7 @@
 from flask import Flask
 
-def init_app(app:Flask):
+
+def init_app(app: Flask):
     from .base import base_bp
     from .memory import memory_bp
     from .user import user_bp

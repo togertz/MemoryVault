@@ -4,6 +4,7 @@ from ..services import UserManagement, UserException, VaultManagement
 
 user_bp = Blueprint('user', __name__, url_prefix="/u")
 
+
 @user_bp.route("/login", methods=["GET", "POST"])
 def login():
     if session.get("user_id", False):
@@ -14,11 +15,12 @@ def login():
         password = request.form.get("password")
 
         user_id = UserManagement.check_login(username=username,
-                                      password=password)
+                                             password=password)
 
         if user_id:
             session["user_id"] = user_id
-            session["user_info"] = UserManagement.get_user_json_package(user_id)
+            session["user_info"] = UserManagement.get_user_json_package(
+                user_id)
             session["vault_info"] = VaultManagement.get_vault_info(user_id)
 
             if session["user_info"].get("family_id", False):
@@ -42,6 +44,7 @@ def login():
     if request.method == "GET":
         return render_template('login.html', title="Login")
 
+
 @user_bp.route("/logout", methods=["GET"])
 def logout():
     if not session.get("user_id", False):
@@ -50,6 +53,7 @@ def logout():
     session.clear()
     flash("Successfully logged out", "success")
     return redirect(url_for("base.index"))
+
 
 @user_bp.route("/register", methods=["GET", "POST"])
 def register():

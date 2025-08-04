@@ -12,6 +12,7 @@ else:
 
 bcrypt_app = Bcrypt()
 
+
 def create_app(config_class=config_class):
     app = Flask(__name__)
     bcrypt_app.init_app(app)

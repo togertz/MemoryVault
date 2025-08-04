@@ -6,45 +6,51 @@ from datetime import datetime
 from ..models import db, User, Family
 from ..app import bcrypt_app
 
+
 class UserException(Exception):
-    def __init__(self, message:str, *args):
+    def __init__(self, message: str, *args):
         super().__init__(*args)
         self.message = message
 
     def get_message(self) -> str:
         return self.message
+
 
 class LoginException(Exception):
-    def __init__(self, message:str, *args):
+    def __init__(self, message: str, *args):
         super().__init__(*args)
         self.message = message
 
     def get_message(self) -> str:
         return self.message
+
 
 class UserManagement(ABC):
 
     @staticmethod
-    def create_user(username:str,
-                    password:str,
-                    password_repeat:str,
-                    firstname:str,
-                    lastname:str,
-                    birthday:str,
-                    admin_token:str=None) -> bool:
+    def create_user(username: str,
+                    password: str,
+                    password_repeat: str,
+                    firstname: str,
+                    lastname: str,
+                    birthday: str,
+                    admin_token: str = None) -> bool:
 
         if UserManagement.username_taken(username):
-            raise UserException(message="No user was created. Username already exists")
+            raise UserException(
+                message="No user was created. Username already exists")
 
         if password != password_repeat:
-            raise UserException(message="No user was created. Password and repeated password need to be the same")
+            raise UserException(
+                message="No user was created. Password and repeated password need to be the same")
 
         is_admin = False
         if admin_token:
             if admin_token == "9264b8a1-2147-4f6c-8401-1d55ac60c644":
                 is_admin = True
             else:
-                raise UserException("No user was created. Admin token is not valid.")
+                raise UserException(
+                    "No user was created. Admin token is not valid.")
 
         username = username.lower()
         password_hash = UserManagement.hash_password(password)
@@ -62,7 +68,7 @@ class UserManagement(ABC):
         return True
 
     @staticmethod
-    def username_taken(username:str) -> bool:
+    def username_taken(username: str) -> bool:
         username = username.lower()
 
         usernames = db.session.query(User.username).all()
@@ -71,17 +77,18 @@ class UserManagement(ABC):
         return username in usernames
 
     @staticmethod
-    def hash_password(password:str) -> str:
+    def hash_password(password: str) -> str:
         return bcrypt_app.generate_password_hash(password=password).decode('utf-8')
 
     @staticmethod
-    def check_login(username:str, password:str) -> str:
+    def check_login(username: str, password: str) -> str:
         if not UserManagement.username_taken(username=username):
             return False
 
         user = User.query.filter_by(username=username).first()
 
-        validLogin = bcrypt_app.check_password_hash(user.password_hash, password)
+        validLogin = bcrypt_app.check_password_hash(
+            user.password_hash, password)
 
         return user.id if validLogin else None
 
@@ -113,11 +120,12 @@ class UserManagement(ABC):
 
     @staticmethod
     def join_family(user_id,
-                    invite_code:str
+                    invite_code: str
                     ):
         family = Family.query.filter_by(invite_code=invite_code).first()
         if family is None:
-            raise UserException("No family with this invite code could be found.")
+            raise UserException(
+                "No family with this invite code could be found.")
 
         user = User.query.filter_by(id=user_id).first()
         if user is None:

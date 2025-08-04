@@ -3,6 +3,7 @@ from ..services import MemoryManagement
 
 memory_bp = Blueprint('memory', __name__, url_prefix='/memory')
 
+
 @memory_bp.route('/', methods=["GET", "POST"])
 def upload():
     if not session.get("user_id", False):
@@ -18,13 +19,15 @@ def upload():
     if request.method == "POST":
         if request.form["vault"] == "own_vault":
             if not session.get("vault_info", False):
-                flash("Memory could not be uploaded. You cannot upload memories to your own vault.", "warning")
+                flash(
+                    "Memory could not be uploaded. You cannot upload memories to your own vault.", "warning")
                 return render_template('memory_upload.html', title="Homepage", user=session["user_info"], vault=session.get("vault_info", None))
 
-            vault_id=session.get("vault_info")["vault_id"]
+            vault_id = session.get("vault_info")["vault_id"]
         elif request.form["vault"] == "family_vault":
             if not session.get("family_vault_info", False):
-                flash("Memory could not be uploaded. You cannot upload memories to your own vault.", "warning")
+                flash(
+                    "Memory could not be uploaded. You cannot upload memories to your own vault.", "warning")
                 return render_template('memory_upload.html', title="Homepage", user=session["user_info"], vault=session.get("vault_info", None))
 
             vault_id = session.get("family_vault_info")["vault_id"]

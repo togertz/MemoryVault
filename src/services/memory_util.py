@@ -7,10 +7,12 @@ from flask import current_app, session
 
 from ..models import db, Memory
 
+
 class SlideshowModes(enum.Enum):
     CHRONOLOGICAL = "chronological"
     RANDOM = "random"
     REVERSE_CHRONOLOGICAL = "reverse-chronological"
+
 
 class MemoryManagement(ABC):
 
@@ -37,7 +39,8 @@ class MemoryManagement(ABC):
             pass
         else:
             filename = f'{session["user_id"]}_{datetime.strftime(datetime.now(), "%Y_%m_%d-%H_%M_%S")}.jpg'
-            save_path = os.path.join(current_app.config["UPLOAD_FOLDER"], filename)
+            save_path = os.path.join(
+                current_app.config["UPLOAD_FOLDER"], filename)
             image_file.save(save_path)
             return filename
 
@@ -48,7 +51,7 @@ class MemoryManagement(ABC):
         return memory.to_json()
 
     @staticmethod
-    def get_slideshow_order(vault_id, order:SlideshowModes, period_start, period_end):
+    def get_slideshow_order(vault_id, order: SlideshowModes, period_start, period_end):
 
         query = Memory.query.filter_by(vault_id=vault_id)
         query = query.filter(Memory.date.between(period_start, period_end))
