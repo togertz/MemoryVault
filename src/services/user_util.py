@@ -30,13 +30,21 @@ class UserManagement(ABC):
                     password_repeat:str,
                     firstname:str,
                     lastname:str,
-                    birthday:str) -> bool:
+                    birthday:str,
+                    admin_token:str=None) -> bool:
 
         if UserManagement.username_taken(username):
             raise UserException(message="No user was created. Username already exists")
 
         if password != password_repeat:
             raise UserException(message="No user was created. Password and repeated password need to be the same")
+
+        is_admin = False
+        if admin_token:
+            if admin_token == "9264b8a1-2147-4f6c-8401-1d55ac60c644":
+                is_admin = True
+            else:
+                raise UserException("No user was created. Admin token is not valid.")
 
         username = username.lower()
         password_hash = UserManagement.hash_password(password)
@@ -47,7 +55,7 @@ class UserManagement(ABC):
                         firstname=firstname,
                         lastname=lastname,
                         birthday=birthday,
-                        is_admin=False)
+                        is_admin=is_admin)
         db.session.add(new_user)
         db.session.commit()
 

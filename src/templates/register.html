@@ -6,7 +6,11 @@
 
 <div class="container">
     <h1 class="mb-2 mt-4">Lege einen neuen User an</h1>
-
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }} fade show">{{ message }}</div>
+        {% endfor %}
+    {% endwith %}
     <form action="{{ url_for('user.register') }}" method="post">
         <div class="mb-3">
             <input class="form-control" type="text" name="username" id="username" placeholder="Username*" required>
@@ -25,14 +29,16 @@
         <div class="mb-3">
             <input class="form-control" type="text" name="lastname" id="lastname" placeholder="Lastname*" required>
         </div>
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% for category, message in messages %}
-                <div class="alert alert-{{ category }} fade show">{{ message }}</div>
-            {% endfor %}
-        {% endwith %}
         <div class="mb-3">
             <label class="form-label" for="lastname">Birthday*</label>
             <input class="form-control" type="date" name="birthday" id="birthday" required>
+        </div>
+        <div class="mb-3 d-flex align-items-center">
+            <input type="checkbox" name="admin-checkbox" id="admin-checkbox" class="form-check-input me-2">
+            <label class="form-label mb-0" for="admin-checkbox">Is admin (requires token)</label>
+        </div>
+        <div class="mb-3" id="admin-token-div" style="display:none;">
+            <input class="form-control" type="text" name="admin-token" id="admin-token" placeholder="Admin Token" required>
         </div>
         <button id="register-btn" class="btn btn-primary w-100 mb-4" type="submit">Register</button>
     </form>

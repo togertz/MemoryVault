@@ -66,7 +66,8 @@ def register():
                                        password_repeat=request.form["password-repeat"],
                                        firstname=request.form["firstname"],
                                        lastname=request.form["lastname"],
-                                       birthday=request.form["birthday"])
+                                       birthday=request.form["birthday"],
+                                       admin_token=request.form.get("admin-token", None))
 
             return render_template("login.html", title="Login", register="True")
         except UserException as e:

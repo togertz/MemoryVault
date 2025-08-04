@@ -50,4 +50,16 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
     })
 
+    // ----------------- Display Admin Token -----------------
+    const adminCheckbox = document.getElementById('admin-checkbox');
+    const adminTokenDiv = document.getElementById('admin-token-div');
+
+    adminCheckbox.addEventListener("change", function() {
+        if (adminCheckbox.checked){
+            adminTokenDiv.style.display = "block";
+        } else {
+            adminTokenDiv.style.display = "none";
+        }
+    });
+
 })
