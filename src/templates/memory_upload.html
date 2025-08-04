@@ -18,18 +18,30 @@
             {% endif %}
             {% if vault %}
                 <div class="alert alert-info mb-4 rounded-pill">
-                    ℹ️ You have {{ vault.days_left }} days remaining in your Collection Period.
+                    ℹ️ You have {{ vault.days_left }} days remaining in your Collection Period if your own vault.
                 </div>
             {% endif %}
             <br>
             {% with messages = get_flashed_messages(with_categories=true) %}
                 {% for category, message in messages %}
-                    <div class="alert alert-warning fade show" role="alert">{{ message }}</div>
+                    <div class="alert alert-{{ category }} fade show" role="alert">{{ message }}</div>
                 {% endfor %}
             {% endwith %}
 
             <!-- Form for Memory Upload -->
             <form action="{{ url_for('memory.upload') }}" enctype="multipart/form-data" method="post">
+                <div class="mb-3">
+                    <label class="form-label" for="vault">Upload memory to</label>
+                    <select class="form-select" id="vault" name="vault">
+                        {% if vault %}
+                            <option value="own_vault">Own vault</option>
+                        {% endif %}
+                        {% if user.family_id %}
+                            <option value="family_vault">Family vault</option>
+                        {% endif %}
+                    </select>
+                </div>
+
                 <div class="mb-3">
                     <label class="form-label" for="date">Date of Memory*</label>
                     <input class="form-control" type="date" name="date" required>

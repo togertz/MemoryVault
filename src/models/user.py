@@ -9,6 +9,8 @@ class User(db.Model):
     lastname = db.Column(db.String(20), nullable=True)
     birthday = db.Column(db.DateTime(timezone=True))
 
+    is_admin = db.Column(db.Boolean, nullable=False)
+
     registered_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
 
     family_id = db.Column(db.Integer, db.ForeignKey("family.id"), nullable=True)
@@ -21,5 +23,6 @@ class User(db.Model):
         return {
             "username": self.username,
             "firstname": self.firstname,
-            "admin": True
+            "family_id": self.family_id,
+            "admin": self.is_admin
         }

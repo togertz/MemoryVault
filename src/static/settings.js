@@ -1,12 +1,17 @@
 document.addEventListener('DOMContentLoaded', async function() {
 
-    const createVaultForm = document.getElementById("create-vault");
+    function setUpCollectionPeriodForm({
+        durationSelectID,
+        startDivId,
+        startSelectID,
+        infoFieldId
+    }){
+        const durationSelection = document.getElementById(durationSelectID);
+        const startDiv = document.getElementById(startDivId);
+        const startSelection = document.getElementById(startSelectID);
+        const information_field = document.getElementById(infoFieldId);
 
-    if (createVaultForm) {
-        const durationSelection = document.getElementById("collection-period-duration");
-        const startDiv = document.getElementById("collection-period-start-div");
-        const startSelection = document.getElementById("collection-period-start");
-        const information_field = document.getElementById("period-end-info");
+        if (!durationSelection || !startDiv || !startSelection) return;
 
         const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
         let normalizeMonthYear = function (month, year) {
@@ -82,5 +87,19 @@ document.addEventListener('DOMContentLoaded', async function() {
         });
     }
 
+    // Vault Form
+    setUpCollectionPeriodForm({
+        durationSelectID: "vault-collection-period-duration",
+        startDivId: "vault-collection-period-start-div",
+        startSelectID: "vault-collection-period-start",
+        infoFieldId: "vault-period-end-info"
+    })
 
+    // Family Form
+    setUpCollectionPeriodForm({
+        durationSelectID: "family-collection-period-duration",
+        startDivId: "family-collection-period-start-div",
+        startSelectID: "family-collection-period-start",
+        infoFieldId: "family-period-end-info"
+    })
 })

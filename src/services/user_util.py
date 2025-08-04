@@ -1,7 +1,9 @@
+import random
+import hashlib
 from abc import ABC
 from datetime import datetime
 
-from ..models import db, User
+from ..models import db, User, Family
 from ..app import bcrypt_app
 
 class UserException(Exception):
@@ -44,7 +46,8 @@ class UserManagement(ABC):
                         password_hash=password_hash,
                         firstname=firstname,
                         lastname=lastname,
-                        birthday=birthday)
+                        birthday=birthday,
+                        is_admin=False)
         db.session.add(new_user)
         db.session.commit()
 
@@ -79,3 +82,56 @@ class UserManagement(ABC):
         user = User.query.filter_by(id=user_id).first()
 
         return user.json_package()
+
+    @staticmethod
+    def create_family(user_id,
+                      family_name,
+                      ):
+        invite_code = f"{random.randint(0, 1000)}_{family_name}"
+        invite_code = hashlib.sha256(invite_code.encode("utf-8")).hexdigest()
+
+        new_family = Family(
+            family_name=family_name,
+            invite_code=invite_code
+        )
+        db.session.add(new_family)
+        db.session.commit()
+
+        user = User.query.filter_by(id=user_id).first()
+        user.family_id = new_family.id
+        db.session.commit()
+
+        return new_family.id
+
+    @staticmethod
+    def join_family(user_id,
+                    invite_code:str
+                    ):
+        family = Family.query.filter_by(invite_code=invite_code).first()
+        if family is None:
+            raise UserException("No family with this invite code could be found.")
+
+        user = User.query.filter_by(id=user_id).first()
+        if user is None:
+            raise UserException("User could not be found.")
+        user.family_id = family.id
+        db.session.commit()
+        return family.id
+
+    @staticmethod
+    def quit_family(user_id):
+        user = User.query.filter_by(id=user_id).first()
+        if user is None:
+            raise UserException("User could not be found.")
+
+        user.family_id = None
+        db.session.commit()
+        return True
+
+    @staticmethod
+    def get_family_info(family_id):
+        family = Family.query.filter_by(id=family_id).first()
+        if family is None:
+            raise UserException("Family could not be found.")
+
+        return family.json_package()

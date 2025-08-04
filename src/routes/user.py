@@ -20,15 +20,23 @@ def login():
             session["user_id"] = user_id
             session["user_info"] = UserManagement.get_user_json_package(user_id)
             session["vault_info"] = VaultManagement.get_vault_info(user_id)
-            flash(f"Successfully logged in", "success")
 
-            return redirect(url_for("memory.upload"))#render_template('login.html', title="Login")
+            if session["user_info"].get("family_id", False):
+                session["family_vault_info"] = {
+                    **UserManagement.get_family_info(session["user_info"].get("family_id", False)),
+                    **VaultManagement.get_vault_info(family_id=session["user_info"].get("family_id", None)),
+                    "number_memories": VaultManagement.get_number_memories(family_id=session["user_info"].get("family_id", False))
+                }
+
+            flash(f"Successfully logged in", "info")
+
+            return redirect(url_for("memory.upload"))
 
         else:
             if UserManagement.username_taken(username=username):
-                flash("Wrong password", "error")
+                flash("Wrong password", "warning")
             else:
-                flash("User does not exist", "error")
+                flash("User does not exist", "warning")
             return render_template("login.html", title="Login", username_value=username)
 
     if request.method == "GET":

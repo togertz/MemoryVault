@@ -6,7 +6,7 @@
 <div class="container mt-4">
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% for category, message in messages %}
-            <div class="alert alert-warning fade show">{{ message }}</div>
+            <div class="alert alert-{{ category }} fade show">{{ message }}</div>
         {% endfor %}
     {% endwith %}
 
@@ -40,24 +40,24 @@
     </div>
     {% else %}
         <div id="create-vault">
-            <div class="alert alert-warning">Please create a vault to upload memories.</div>
+            <div class="alert alert-warning">Please create a vault or family to upload memories.</div>
             <h3 class="mb-2">Please create a vault for your account:</h3>
             <form action="{{ url_for('settings.create_vault') }}" method="POST">
                 <div class="mb-3">
                     <label class="form-label" for="duration">Duration of each Collection Period</label>
-                    <select class="form-select" class="dropdown" id="collection-period-duration" name="duration" required>
+                    <select class="form-select" class="dropdown" id="vault-collection-period-duration" name="duration" required>
                         <option value="1">Monthly</option>
                         <option value="3">Quarterly</option>
                         <option value="6">Half-yearly</option>
                         <option value="12">Yearly</option>
                     </select>
                 </div>
-                <div class="mb-3" id="collection-period-start-div" style="visibility: hidden;">
+                <div class="mb-3" id="vault-collection-period-start-div" style="visibility: hidden;">
                     <label class="form-label" for="start">Start of first Collection Period</label>
-                    <select class="form-select" id="collection-period-start" name="start" required>
+                    <select class="form-select" id="vault-collection-period-start" name="start" required>
                     </select>
                 </div>
-                <div class="form-text mb-2" id="period-end-info">
+                <div class="form-text mb-2" id="vault-period-end-info">
                 </div>
                 <div class="form-text mb-2">
                     The duration and end of periods cannot be changed later.
@@ -67,7 +67,98 @@
         </div>
     {% endif %}
 </div>
-<div class="elem">
+<div class="container mt-4">
     <h1 class="mb-2">Family Settings:</h1>
+    {% if family_vault %}
+        <h3 class="mb-2">Family Information</h3>
+        <table class="table table-bordered table-striped">
+            <tbody>
+                <tr>
+                    <th scope="row">Family name</th>
+                    <td>{{ family_vault.family_name }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Invite code</th>
+                    <td>{{ family_vault.invite_code }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Number members</th>
+                    <td>{{ family_vault.number_members }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Members</th>
+                    <td>
+                        <ul class="mb-0">
+                            {% for member in family_vault.members %}
+                                <li>{{ member }}</li>
+                            {% endfor %}
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <h3 class="mb-2">Family Vault Information</h3>
+        <table class="table table-bordered table-striped">
+            <tbody>
+                <tr>
+                    <th scope="row">Number of Memories in current Vault</th>
+                    <td>{{ family_vault.number_memories }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Days remaining in the collection period</th>
+                    <td>{{ family_vault.days_left }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Duration of Collection Period</th>
+                    <td>{{ family_vault.period_duration }} Month(s)</td>
+                </tr>
+                <tr>
+                    <th scope="row">End of current Collection Period</th>
+                    <td>{{ family_vault.curr_period_end }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <div>
+            <form action="{{ url_for('settings.quit_family') }}" method="post">
+                    <button id="register-btn" class="btn btn-danger w-100 mb-4" type="submit">Quit Family</button>
+            </form>
+        </div>
+    {% else %}
+        <div class="alert alert-warning">Please create a vault or family to upload memories.</div>
+        <h3 class="mb-2">Join a Family</h3>
+        <form action="{{ url_for('settings.join_family') }}" method="POST">
+            <div class="mb-3">
+                <input class="form-control mb-2" type="text" name="invite-code" id="invite-code" placeholder="Family ID" required>
+                <button id="join-btn" class="btn btn-primary w-100 mb-4" type="Submit">Join Family</button>
+            </div>
+        </form>
+        <h3 class="mb-2">Create a Family</h3>
+        <form action="{{ url_for('settings.create_family') }}" method="POST">
+            <div class="mb-3">
+                <input class="form-control mb-2" type="text" name="family-name" id="family-name" placeholder="Family Name" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="duration">Duration of each Collection Period</label>
+                <select class="form-select" class="dropdown" id="family-collection-period-duration" name="duration" required>
+                    <option value="1">Monthly</option>
+                    <option value="3">Quarterly</option>
+                    <option value="6">Half-yearly</option>
+                    <option value="12">Yearly</option>
+                </select>
+            </div>
+            <div class="mb-3" id="family-collection-period-start-div" style="visibility: hidden;">
+                <label class="form-label" for="start">Start of first Collection Period</label>
+                <select class="form-select" id="family-collection-period-start" name="start" required>
+                </select>
+            </div>
+            <div class="form-text mb-2" id="family-period-end-info">
+            </div>
+            <div class="form-text mb-2">
+                The duration and end of periods cannot be changed later.
+            </div>
+
+            <button id="create-btn" class="btn btn-primary w-100 mb-4" type="Submit">Create Family</button>
+        </form>
+    {% endif %}
 </div>
 {% endblock %}

@@ -1,59 +1,54 @@
 {% extends "base.html" %}
 
 {% block content %}
+<script>
+    const userIsAdmin = {{ user.admin | tojson }};
+    const periods = {
+        own_vault: {{ slideshow_info.vault.periods | tojson if slideshow_info.vault else 'null' }},
+        family_vault: {{ slideshow_info.family.periods | tojson if slideshow_info.family else 'null' }}
+    };
+</script>
+<script src="{{ url_for('static', filename='slideshow.js') }}"></script>
 
 <div class="container">
     <h1 class="mb-2">Slideshow</h1>
     {% if slideshow_info %}
         {% if slideshow_info.available %}
-            <div class="alert alert-info">
-                The Slideshow is now available! Check out the memories you collected in the last months!
-            </div>
-
             <form action="{{ url_for('slideshow.start_slideshow') }}" method="post">
+                <label class="form-label" for="vault-select">Upload memory to</label>
+                <select class="form-select mb-4" id="vault-select" name="vault">
+                    {% if slideshow_info.vault %}
+                        <option value="own_vault">Own vault</option>
+                    {% endif %}
+                    {% if slideshow_info.family %}
+                        <option value="family_vault">Family vault</option>
+                    {% endif %}
+                </select>
+
                 <label class="form-label" for="collection-period">Choose the Collection Period:</label>
                 <select class="form-select mb-4" id="collection-period" name="collection-period" required>
-                    {% for period in slideshow_info.previous_periods %}
-                        <option value="{{period.period_start}}-{{period.period_end}}">{{period.period_start}} - {{period.period_end}}</option>
-                    {% endfor %}
                 </select>
+
                 <label class="form-label" for="presentation-order">Choose the order of the memories</label>
                 <select class="form-select  mb-4" id="presentation-order" name="order" required>
                     <option value="chronological">Chronological</option>
                     <option value="random">Random</option>
                     <option value="reverse-chronological">Reverse chronological</option>
                 </select>
+
                 {% with messages = get_flashed_messages(with_categories=true) %}
                     {% for category, message in messages %}
-                        <div class="alert alert-warning fade show">{{ message }}</div>
+                        <div class="alert alert-{{ category }} fade show">{{ message }}</div>
                     {% endfor %}
                 {% endwith %}
+
                 <button id="admin-btn" class="btn btn-primary w-100 mb-4" type="submit">Access slideshow</button>
             </form>
         {% else %}
-            <div class="alert alert-info">
-                The Slideshow will be available in {{ slideshow_info.days_left }} days.
-                Keep uploading fond memories and come back once your Collection Period ends on {{ slideshow_info.period_end }}.
+            <div class="alert alert-warning">
+                There is currently no Slideshow for you available.
+                Keep uploading fond memories and come back once your Collection Period has ended.
             </div>
-
-            {% if user.admin %}
-                <form action="{{ url_for('slideshow.start_slideshow') }}" method="post">
-                    <label class="form-label" for="collection-period">Choose the Collection Period:</label>
-                    <select class="form-select mb-4" id="collection-period" name="collection-period" required>
-                        {% for period in slideshow_info.previous_periods %}
-                            <p>period</p>
-                            <option value="{{period.period_start}}-{{period.period_end}}">{{period.period_start}} - {{period.period_end}}</option>
-                        {% endfor %}
-                    </select>
-                    <label class="form-label" for="presentation-order">Choose the order of the memories</label>
-                    <select class="form-select mb-4" id="presentation-order" name="presentation-order" required>
-                        <option value="chronological">Chronological</option>
-                        <option value="random">Random</option>
-                        <option value="reverse-chronological">Reverse chronological</option>
-                    </select>
-                    <button id="admin-btn" class="btn btn-primary w-100 mb-4" type="submit">Access slideshow with admin privileges</button>
-                </form>
-            {% endif %}
         {% endif %}
     {% else %}
         Something went wrong :(
