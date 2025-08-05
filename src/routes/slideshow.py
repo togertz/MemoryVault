@@ -1,3 +1,7 @@
+"""
+Module containing HTTP routes for slideshow.
+Defines blueprint and logic for handeling requests to /slideshow url.
+"""
 import os
 import base64
 from datetime import datetime
@@ -11,23 +15,40 @@ slideshow_bp = Blueprint('slideshow', __name__, url_prefix='/slideshow')
 
 @slideshow_bp.route('/', methods=["GET"])
 def index():
+    """
+    Handles GET requests to url + /slideshow.
+
+    Loads necessary vault information to display different slideshow options to the user.
+    Depending on the collection period duration and admin status, the user can choose
+    different options to view his slideshow.
+
+    Returns:
+        Response: Rendered template for slideshow page.
+    """
+    # -- Check if user is already logged in --
     if not session.get("user_id", False):
         flash("Please login first", "warning")
         return redirect(url_for("user.login"))
 
+    # -- Check if user has private vault with a finished collection period to view --
     vault_slideshow_available = False
     vault_collection_periods = None
     if session.get("vault_info", False):
+        # -- Get all existing periods of vault --
         vault_collection_periods = VaultManagement.get_all_periods(
             vault_id=session["vault_info"]["vault_id"])
+        # -- If not admin: is there one closed period --
         vault_slideshow_available = len(vault_collection_periods) > 0\
             if session["user_info"]["admin"] else len(vault_collection_periods) > 1
 
+    # -- Check if user has family vault with a finished collection period to view --
     family_slideshow_available = False
     family_collection_periods = None
     if session.get("family_vault_info", False):
+        # -- Get all existing periods of vault --
         family_collection_periods = VaultManagement.get_all_periods(
             vault_id=session["family_vault_info"]["vault_id"])
+        # -- If not admin: is there one closed period --
         family_slideshow_available = len(family_collection_periods) > 0\
             if session["user_info"]["admin"] else len(family_collection_periods) > 1
 
@@ -35,21 +56,20 @@ def index():
         "available": vault_slideshow_available or family_slideshow_available
     }
 
-    print(family_collection_periods)
-
+    # -- Remove current period as slideshow option if user has no admin privileges --
     if not session["user_info"]["admin"]:
         if vault_slideshow_available:
             vault_collection_periods.pop(-1)
         if family_slideshow_available:
             family_collection_periods.pop(-1)
 
+    # -- Load necessary slideshow information
     if vault_slideshow_available:
         slideshow_info["vault"] = {
             "periods": vault_collection_periods[::-1]
         }
     else:
         slideshow_info["vault"] = None
-
     if family_slideshow_available:
         slideshow_info["family"] = {
             "periods": family_collection_periods[::-1]
@@ -64,27 +84,37 @@ def index():
 
 @slideshow_bp.route('/run', methods=["GET", "POST"])
 def start_slideshow():
-    print(request.form)
+    """
+    Handles GET and POST requests to url + /slideshow/run for navigating through slideshow.
+
+    Loads and renders memories for slideshow mode.
+    POST requests will be triggered to start slideshow,
+    while GET requests are used for navigating through slideshow.
+
+    Returns:
+        Response: Rendered template for memory.
+    """
+    # -- Check if user is already logged in --
     if not session.get("user_id", False):
         flash("Please login first", "warning")
         return redirect(url_for("user.login"))
 
-    if not session["user_info"]["admin"]:
-        if not session["vault_info"]["slideshow_available"]:
-            return redirect(url_for("slideshow.index"))
-
+    # -- Logic for starting slideshow --
     if request.method == "POST":
+        # -- Getting vault id for slideshow vault --
         vault_id = None
         if request.form.get("vault") == "own_vault":
             vault_id = session["vault_info"]["vault_id"]
         elif request.form.get("vault") == "family_vault":
             vault_id = session["family_vault_info"]["vault_id"]
 
+        # -- Parse slideshow options --
         order = SlideshowModes(request.form.get("order"))
         period = request.form.get("collection-period").split("-")
         period_start = datetime.strptime(period[0], "%A, %b %d, %Y").date()
         period_end = datetime.strptime(period[1], "%A, %b %d, %Y").date()
 
+        # -- Get slideshow order --
         session["slideshow_order"] = MemoryManagement.get_slideshow_order(vault_id=vault_id,
                                                                           order=order,
                                                                           period_start=period_start,
@@ -95,6 +125,8 @@ def start_slideshow():
             return redirect(url_for("slideshow.index"))
 
         current_memory = 1
+
+    # -- Logic for navigating through slideshow --
     elif request.method == "GET":
         current_memory = int(request.args.get("number", 1))
         memory_order = session["slideshow_order"]
@@ -104,6 +136,7 @@ def start_slideshow():
         elif current_memory < 1:
             current_memory = 1
 
+    # -- Logic for displaying memories --
     memory_data = MemoryManagement.get_memory_data(
         memory_id=session["slideshow_order"][current_memory - 1])
     image_b64 = None

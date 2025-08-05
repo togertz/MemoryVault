@@ -1,9 +1,17 @@
+"""
+DB module for representing a user in MemoryVault.
+"""
 from sqlalchemy.sql import func
 
 from .base import db
 
 
 class User(db.Model):
+    """
+    Definition of user table in DB.
+    A user is a person able to create and upload memories as well as
+    accessing the slideshow after the predefined collection period.
+    """
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), unique=True, nullable=False)
     firstname = db.Column(db.String(20), nullable=False)
@@ -20,10 +28,14 @@ class User(db.Model):
         db.Integer, db.ForeignKey("family.id"), nullable=True)
     vault = db.relationship("Vault", backref='owner', uselist=False)
 
-    def __repr__(self):
-        return f"User {self.username}"
+    def json_package(self) -> dict:
+        """
+        Returns a dictionary representation of the user instance,
+        including username, firstname, family_id and admin flag.
 
-    def json_package(self):
+        Returns:
+            dict: A dictionary containing user details.
+        """
         return {
             "username": self.username,
             "firstname": self.firstname,

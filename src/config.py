@@ -1,3 +1,7 @@
+"""
+Configuration module for MemoryVault.
+Loads environment variables for different environments.
+"""
 import os
 from dotenv import load_dotenv
 
@@ -11,6 +15,10 @@ POSTGRES_DATABASE = os.getenv("POSTGRES_DATABASE")
 
 
 class Config:
+    """
+    Base configuration class.
+    Stores environment variables independent from the environment.
+    """
     SQLALCHEMY_DATABASE_URI = \
         f'postgresql+psycopg2://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_URL}/{POSTGRES_DATABASE}'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
@@ -22,8 +30,16 @@ class Config:
 
 
 class ProductionConfig:
+    """
+    Production configuration class.
+    Stores environement variables for when deployed on AWS Services.
+    """
     pass
 
 
 class DevelopmentConfig(Config):
+    """
+    Development configuration class.
+    Stores environment variables for when deployed on local machine.
+    """
     DEBUG = True

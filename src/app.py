@@ -1,3 +1,7 @@
+"""
+Main application module for MemoryVault.
+Loads app configuration, creates Flask app, and configures routes and models.
+"""
 import os
 from dotenv import load_dotenv
 from flask import Flask
