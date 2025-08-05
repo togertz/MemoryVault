@@ -4,14 +4,17 @@
 <script src="{{ url_for('static', filename='settings.js') }}"></script>
 
 <div class="container mt-4">
+    <!-- Flash Element -->
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% for category, message in messages %}
             <div class="alert alert-{{ category }} fade show">{{ message }}</div>
         {% endfor %}
     {% endwith %}
 
+    <!-- Settings for private vault -->
     <h1 class="mb-2">Vault Settings:</h1>
 
+    <!-- HTML elements when private vault is already configured -->
     {% if vault %}
     <table class="table table-bordered table-striped">
         <tbody>
@@ -38,6 +41,7 @@
                 <button id="register-btn" class="btn btn-secondary w-100 mb-4" type="submit">Go to memory upload</button>
         </form>
     </div>
+    <!-- HTML elements to configure private vault -->
     {% else %}
         <div id="create-vault">
             <div class="alert alert-warning">Please create a vault or family to upload memories.</div>
@@ -67,8 +71,10 @@
         </div>
     {% endif %}
 </div>
+<!-- Settings for family and family vault -->
 <div class="container mt-4">
     <h1 class="mb-2">Family Settings:</h1>
+    <!-- HTML elements when family vault is already configured -->
     {% if family_vault %}
         <h3 class="mb-2">Family Information</h3>
         <table class="table table-bordered table-striped">
@@ -123,6 +129,7 @@
                     <button id="register-btn" class="btn btn-danger w-100 mb-4" type="submit">Quit Family</button>
             </form>
         </div>
+    <!-- HTML elements to join family or configure family vault -->
     {% else %}
         <div class="alert alert-warning">Please create a vault or family to upload memories.</div>
         <h3 class="mb-2">Join a Family</h3>

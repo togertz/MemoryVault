@@ -1,7 +1,8 @@
 document.addEventListener("DOMContentLoaded", async function() {
 
+    // --------------- Code for loading and displaying the map ---------------
     if (typeof latitude !== 'undefined' && typeof longitude !== 'undefined'){
-        console.log("Loading map...")
+        // Load map
         const map = L.map('map').setView([latitude, longitude], 16);
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -9,8 +10,10 @@ document.addEventListener("DOMContentLoaded", async function() {
             attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         }).addTo(map);
 
+        // Set marker
         L.marker([latitude, longitude]).addTo(map);
 
+        // Deactivate user interaction
         map.zoomControl.remove();
         map.dragging.disable();
         map.touchZoom.disable();
@@ -19,8 +22,9 @@ document.addEventListener("DOMContentLoaded", async function() {
         map.keyboard.disable();
 
         if (map.tap) map.tab.disable();
+
     } else {
-        console.log("removing map")
+        // If no coordinates are given: remove map element
         const map = document.getElementById('map');
         map.remove();
     }

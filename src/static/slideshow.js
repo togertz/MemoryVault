@@ -3,6 +3,9 @@ document.addEventListener("DOMContentLoaded", async function() {
     const vaultSelect = document.getElementById('vault-select');
     const periodSelect = document.getElementById('collection-period');
 
+    /**
+     * Update the available select options depending on the choosen vault.
+     */
     const updatePeriodSelection = function(){
         let periodOptions = periods[vaultSelect.value];
         periodSelect.innerHTML = '';
