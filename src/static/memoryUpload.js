@@ -1,5 +1,19 @@
 document.addEventListener("DOMContentLoaded", async function () {
 
+    // --------------- Dynamically show the remaining number of characters ---------------
+    const descriptionInput = document.getElementById("description-input");
+    const charCounter = document.getElementById("charCounter");
+    console.log("here")
+
+    if (descriptionInput && charCounter){
+        console.log("here again")
+        descriptionInput.addEventListener("input", function () {
+            var descLen = descriptionInput.value.length;
+            charCounter.textContent = `${descLen} / 999`;
+        });
+        charCounter.textContent = `0 / 999`;
+    };
+
     // --------------- Code for loading and displaying the uploaded image ---------------
     const imageUpload = document.getElementById("imageUpload");
     const previewImg = document.getElementById("previewImg");

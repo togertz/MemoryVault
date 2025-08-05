@@ -142,7 +142,7 @@
         <h3 class="mb-2">Create a Family</h3>
         <form action="{{ url_for('settings.create_family') }}" method="POST">
             <div class="mb-3">
-                <input class="form-control mb-2" type="text" name="family-name" id="family-name" placeholder="Family Name" required>
+                <input class="form-control mb-2" type="text" name="family-name" id="family-name" placeholder="Family Name" maxlength="30" required>
             </div>
             <div class="mb-3">
                 <label class="form-label" for="duration">Duration of each Collection Period</label>
