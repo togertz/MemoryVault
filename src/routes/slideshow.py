@@ -59,7 +59,7 @@ def index():
         }
 
         # -- Remove current period as slideshow option if user has no admin privileges --
-        if not session["user_info"]["admin"]:
+        if not session.get("user_info", {}).get("admin", False):
             if vault_slideshow_available:
                 vault_collection_periods.pop(-1)
             if family_slideshow_available:

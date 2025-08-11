@@ -116,7 +116,7 @@ class MemoryManagement(ABC):
             memory_id: int
 
         Returns:
-            dict: containing the information of the memory
+            list: containing the information of the memory
         """
         query = Memory.query.filter_by(vault_id=vault_id)
         query = query.filter(Memory.date.between(period_start, period_end))

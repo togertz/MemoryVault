@@ -15,7 +15,7 @@
     {% if slideshow_info %}
         {% if slideshow_info.available %}
             <form action="{{ url_for('slideshow.start_slideshow') }}" method="post">
-                <label class="form-label" for="vault-select">Upload memory to</label>
+                <label class="form-label" for="vault-select">Access slideshow for:</label>
                 <select class="form-select mb-4" id="vault-select" name="vault">
                     {% if slideshow_info.vault %}
                         <option value="own_vault">Own vault</option>
@@ -45,6 +45,11 @@
                 <button id="admin-btn" class="btn btn-primary w-100 mb-4" type="submit">Access slideshow</button>
             </form>
         {% else %}
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} fade show">{{ message }}</div>
+                {% endfor %}
+            {% endwith %}
             <div class="alert alert-warning">
                 There is currently no Slideshow for you available.
                 Keep uploading fond memories and come back once your Collection Period has ended.
