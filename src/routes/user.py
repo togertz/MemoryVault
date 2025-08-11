@@ -2,6 +2,8 @@
 Module containing HTTP routes for user page.
 Defines blueprint and logic for handeling requests to /user url.
 """
+import logging
+import traceback
 from flask import Blueprint, render_template, request, flash, redirect, url_for, jsonify, session
 
 from ..services import UserManagement, UserException, VaultManagement
@@ -23,45 +25,53 @@ def login():
     if session.get("user_id", False):
         return redirect(url_for("memory.upload"))
 
-    # -- Handle user login --
-    if request.method == "POST":
-        username = request.form.get("username").lower()
-        password = request.form.get("password")
+    try:
+        # -- Handle user login --
+        if request.method == "POST":
+            username = request.form.get("username").lower()
+            password = request.form.get("password")
 
-        user_id = UserManagement.check_login(username=username,
-                                             password=password)
+            user_id = UserManagement.check_login(username=username,
+                                                 password=password)
 
-        # -- Handle successful login and load user data into session --
-        if user_id:
-            session["user_id"] = user_id
-            session["user_info"] = UserManagement.get_user_info(
-                user_id)
-            session["vault_info"] = VaultManagement.get_vault_info(user_id)
+            # -- Handle successful login and load user data into session --
+            if user_id:
+                session["user_id"] = user_id
+                session["user_info"] = UserManagement.get_user_info(
+                    user_id)
+                session["vault_info"] = VaultManagement.get_vault_info(user_id)
 
-            if session["user_info"].get("family_id", False):
-                session["family_vault_info"] = {
-                    **UserManagement.get_family_info(
-                        session["user_info"].get("family_id", False)),
-                    **VaultManagement.get_vault_info(
-                        family_id=session["user_info"].get("family_id", None)),
-                    "number_memories": VaultManagement.get_number_memories(
-                        family_id=session["user_info"].get("family_id", False))
-                }
+                if session["user_info"].get("family_id", False):
+                    session["family_vault_info"] = {
+                        **UserManagement.get_family_info(
+                            session["user_info"].get("family_id", False)),
+                        **VaultManagement.get_vault_info(
+                            family_id=session["user_info"].get("family_id", None)),
+                        "number_memories": VaultManagement.get_number_memories(
+                            family_id=session["user_info"].get("family_id", False))
+                    }
 
-            flash("Successfully logged in", "info")
+                flash("Successfully logged in", "info")
 
-            return redirect(url_for("memory.upload"))
+                return redirect(url_for("memory.upload"))
 
-        # -- Handle unsucessful login and render error message --
-        if UserManagement.username_taken(username=username):
-            flash("Wrong password", "warning")
-        else:
-            flash("User does not exist", "warning")
-        return render_template("login.html", title="Login", username_value=username)
+            # -- Handle unsucessful login and render error message --
+            if UserManagement.username_taken(username=username):
+                flash("Wrong password", "warning")
+            else:
+                flash("User does not exist", "warning")
+            return render_template("login.html", title="Login", username_value=username)
 
-    # -- Render Login page --
-    if request.method == "GET":
-        return render_template('login.html', title="Login")
+        # -- Render Login page --
+        if request.method == "GET":
+            return render_template('login.html', title="Login")
+
+    except Exception as e:
+        logging.error("Something went wrong %s", traceback.format_exc())
+        message = "Please contact an admin to get furhter insights into this error."
+        if session.get("user_info", {}).get("is_admin", False):
+            message = traceback.format_exc()
+        return render_template("base.html", user=session.get("user_info", None), error=message)
 
 
 @user_bp.route("/logout", methods=["GET"])
@@ -78,10 +88,18 @@ def logout():
     if not session.get("user_id", False):
         return redirect(url_for("user.login"))
 
-    # -- Clear session --
-    session.clear()
-    flash("Successfully logged out", "success")
-    return redirect(url_for("base.index"))
+    try:
+        # -- Clear session --
+        session.clear()
+        flash("Successfully logged out", "success")
+        return redirect(url_for("base.index"))
+
+    except Exception as e:
+        logging.error("Something went wrong %s", traceback.format_exc())
+        message = "Please contact an admin to get furhter insights into this error."
+        if session.get("user_info", {}).get("is_admin", False):
+            message = traceback.format_exc()
+        return render_template("base.html", user=session["user_info"], error=message)
 
 
 @user_bp.route("/register", methods=["GET", "POST"])
@@ -117,6 +135,12 @@ def register():
         except UserException as e:
             flash(e.get_message(), "warning")
             return render_template("register.html", title="Register")
+        except Exception as e:
+            logging.error("Something went wrong %s", traceback.format_exc())
+            message = "Please contact an admin to get furhter insights into this error."
+            if session.get("user_info", {}).get("is_admin", False):
+                message = traceback.format_exc()
+            return render_template("base.html", user=session.get("user_info", None), error=message)
 
 
 @user_bp.route("/username-taken", methods=["GET"])

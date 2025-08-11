@@ -3,6 +3,7 @@ Module containing HTTP routes for settings page.
 Defines blueprint and logic for handeling requests to /settings url.
 """
 import traceback
+import logging
 from flask import Blueprint, render_template, request, session, redirect, url_for, flash
 from ..services import UserManagement, VaultManagement, UserException
 
@@ -43,9 +44,10 @@ def index():
                                vault=vault_info,
                                family_vault=family_info)
 
-    except Exception:
+    except Exception as e:
+        logging.error("Something went wrong %s", traceback.format_exc())
         message = "Please contact an admin to get furhter insights into this error."
-        if session.get("user_info").get("io_admin"):
+        if session.get("user_info", {}).get("is_admin", False):
             message = traceback.format_exc()
         return render_template("base.html", user=session["user_info"], error=message)
 
@@ -67,9 +69,15 @@ def create_vault():
 
     if request.method == "POST":
         try:
+            logging.info(f"User {session.get('user_id', None)} configured his/her vault with \
+                         start on {request.form.get('start', None)} and duration of {request.form.get('duration', None)}")
             # -- Check if user already created a vault --
             if session.get("vault_info", False):
                 flash("You already created a vault", "warning")
+                return redirect(url_for("settings.index"))
+
+            if not request.form.get("duration", False) and not request.form.get("start", None):
+                flash("Please fill out the required form fields.")
                 return redirect(url_for("settings.index"))
 
             # -- Create vault --
@@ -80,14 +88,15 @@ def create_vault():
 
             session["vault_info"] = VaultManagement.get_vault_info(
                 session["user_id"])
-
+            logging.info(
+                f"Vault for user {session.get('user_id', None)} was created sucessfully.")
             return redirect(url_for("settings.index"))
         except Exception:
-            flash("Something went wrong", "error")
-            return render_template("settings.html",
-                                   user=session["user_id"],
-                                   vault=session.get("vault_info", None),
-                                   family=session.get("family_vault_info", None))
+            logging.error("Something went wrong %s", traceback.format_exc())
+            message = "Please contact an admin to get furhter insights into this error."
+            if session.get("user_info", {}).get("is_admin", False):
+                message = traceback.format_exc()
+            return render_template("base.html", user=session["user_info"], error=message)
 
 
 @settings_bp.route("/join_family", methods=["POST"])
@@ -100,8 +109,20 @@ def join_family():
     Returns:
         Response: Rendered template for settings page containing family information.
     """
+    # -- Check if user is already logged in --
+    if not session.get("user_id", False):
+        flash("Please login first", "warning")
+        return redirect(url_for("user.login"))
+
+    # -- Check if user is already a member of a family --
+    if session.get("family_vault_info", False):
+        flash("You are already part of a family.", "warning")
+        return redirect(url_for("settings.index"))
+
     if request.method == "POST":
         try:
+            logging.info(f"User {session.get('user_id', None)} is trying to join family \
+                         with invite code {request.form.get('invite-code', None)}")
             # -- Add user to family --
             family_id = UserManagement.join_family(
                 user_id=session["user_id"], invite_code=request.form.get("invite-code", ""))
@@ -120,6 +141,12 @@ def join_family():
         except UserException as e:
             flash(e.get_message(), "warning")
             return redirect(url_for("settings.index"))
+        except Exception as e:
+            logging.error("Something went wrong %s", traceback.format_exc())
+            message = "Please contact an admin to get furhter insights into this error."
+            if session.get("user_info", {}).get("is_admin", False):
+                message = traceback.format_exc()
+            return render_template("base.html", user=session["user_info"], error=message)
 
 
 @settings_bp.route("/create_family", methods=["POST"])
@@ -132,8 +159,15 @@ def create_family():
     Returns:
         Response: Rendered template for settings page containing family information.
     """
+    # -- Check if user is already logged in --
+    if not session.get("user_id", False):
+        flash("Please login first", "warning")
+        return redirect(url_for("user.login"))
+
     if request.method == "POST":
         try:
+            logging.info(
+                f"User {session.get('user_id', None)} created a family with name {request.form.get('family-name', None)}")
             # -- Check if user is already a member of a family --
             if session.get("family_vault_info", False):
                 flash("You are already part of a family.", "warning")
@@ -161,9 +195,16 @@ def create_family():
                 "number_memories": VaultManagement.get_number_memories(family_id=family_id)
             }
             return redirect(url_for("settings.index"))
+
         except UserException as e:
             flash(e.get_message(), "warning")
             return redirect(url_for("settings.index"))
+        except Exception as e:
+            logging.error("Something went wrong %s", traceback.format_exc())
+            message = "Please contact an admin to get furhter insights into this error."
+            if session.get("user_info", {}).get("is_admin", False):
+                message = traceback.format_exc()
+            return render_template("base.html", user=session["user_info"], error=message)
 
 
 @settings_bp.route("/quit_family", methods=["POST"])
@@ -176,17 +217,31 @@ def quit_family():
     Returns:
         Response: Rendered template for settings page containing family information.
     """
+    # -- Check if user is already logged in --
+    if not session.get("user_id", False):
+        flash("Please login first", "warning")
+        return redirect(url_for("user.login"))
+
     if request.method == "POST":
         if not session.get("family_vault_info", False):
             flash("You are not part of a family.", "warning")
             return redirect(url_for("settings.index"))
         try:
+            logging.info(
+                f"User {session.get('user_id', None)} left his family.")
             UserManagement.quit_family(session["user_id"])
             session["user_info"] = UserManagement.get_user_info(
                 session["user_id"])
             session.pop("family_vault_info")
             flash("Successfully quit family.", "info")
             return redirect(url_for("settings.index"))
+
         except UserException as e:
             flash(e.get_message(), "warning")
             return redirect(url_for("settings.index"))
+        except Exception as e:
+            logging.error("Something went wrong %s", traceback.format_exc())
+            message = "Please contact an admin to get furhter insights into this error."
+            if session.get("user_info", {}).get("is_admin", False):
+                message = traceback.format_exc()
+            return render_template("base.html", user=session["user_info"], error=message)
