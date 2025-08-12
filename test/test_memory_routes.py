@@ -142,7 +142,7 @@ def test_post_valid_upload(app_client):
             "curr_period_end": "Sunday, Aug 31, 2025"
         }
 
-    with patch("src.services.MemoryManagement.upload_memory") as mock_upload:
+    with patch("src.memoryvault.services.MemoryManagement.upload_memory") as mock_upload:
         res = client.post("/memory/", data={
             "vault": "own_vault",
             "date": "2025-08-05",
@@ -171,7 +171,7 @@ def test_exception_handeling(app_client):
             "curr_period_end": "Sunday, Aug 31, 2025"
         }
 
-    with patch("src.services.MemoryManagement.upload_memory", side_effect=Exception):
+    with patch("src.memoryvault.services.MemoryManagement.upload_memory", side_effect=Exception):
         res = client.post("/memory/", data={
             "vault": "own_vault",
             "date": "2025-08-05",

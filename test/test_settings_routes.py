@@ -28,7 +28,7 @@ def test_get_index_no_vault_configured(app_client):
         session["user_id"] = 1
         session["user_info"] = {"firstname": "Max"}
 
-    with patch("src.routes.settings.VaultManagement.get_vault_info", return_value=None):
+    with patch("src.memoryvault.routes.settings.VaultManagement.get_vault_info", return_value=None):
         res = client.get("/settings/")
 
         assert res.status_code == 200
@@ -52,8 +52,8 @@ def test_get_index_private_vault_configured(app_client):
     fake_vault_info = {"days_left": 10, "period_duration": 6,
                        "curr_period_end": "Friday, 26 March 2025"}
 
-    with patch("src.routes.settings.VaultManagement.get_vault_info", return_value=fake_vault_info), \
-            patch("src.routes.settings.VaultManagement.get_number_memories", return_value=10):
+    with patch("src.memoryvault.routes.settings.VaultManagement.get_vault_info", return_value=fake_vault_info), \
+            patch("src.memoryvault.routes.settings.VaultManagement.get_number_memories", return_value=10):
         res = client.get("/settings/")
 
         assert res.status_code == 200
@@ -84,7 +84,7 @@ def test_get_index_family_vault_configured(app_client):
             "curr_period_end": "Friday, 26 March 2025"
         }
 
-    with patch("src.routes.settings.VaultManagement.get_vault_info", return_value=None):
+    with patch("src.memoryvault.routes.settings.VaultManagement.get_vault_info", return_value=None):
         res = client.get("/settings/")
 
         assert res.status_code == 200
@@ -105,7 +105,7 @@ def test_index_exception_handeling(app_client):
         session["user_id"] = 1
         session["user_info"] = {"firstname": "Max"}
 
-    with patch("src.routes.settings.VaultManagement.get_vault_info", side_effect=RuntimeError):
+    with patch("src.memoryvault.routes.settings.VaultManagement.get_vault_info", side_effect=RuntimeError):
         res = client.get("/settings/")
 
         assert res.status_code == 200
@@ -157,7 +157,7 @@ def test_post_create_vault_successful(app_client):
         session["user_id"] = 1
         session["user_info"] = {"firstname": "Max"}
 
-    with patch("src.services.VaultManagement.create_vault") as mock_vault:
+    with patch("src.memoryvault.services.VaultManagement.create_vault") as mock_vault:
         res = client.post("/settings/create_vault",
                           data={
                               "duration": 10,
@@ -180,7 +180,7 @@ def test_create_vault_exception_handeling(app_client):
         session["user_id"] = 1
         session["user_info"] = {"firstname": "Max"}
 
-    with patch("src.routes.settings.VaultManagement.create_vault", side_effect=RuntimeError):
+    with patch("src.memoryvault.routes.settings.VaultManagement.create_vault", side_effect=RuntimeError):
         res = client.post("/settings/create_vault",
                           data={
                               "duration": 10,
@@ -216,7 +216,7 @@ def test_post_join_family_invalid_invite_code(app_client):
         session["user_id"] = 1
         session["user_info"] = {"firstname": "Max"}
 
-    with patch("src.routes.settings.UserManagement.join_family", side_effect=UserException("Testing Error")):
+    with patch("src.memoryvault.routes.settings.UserManagement.join_family", side_effect=UserException("Testing Error")):
         res = client.post("/settings/join_family",
                           follow_redirects=True)
 
@@ -248,10 +248,10 @@ def test_post_join_family_successful(app_client):
         "curr_period_end": "Friday, 26 March 2025"
     }
 
-    with patch("src.routes.settings.UserManagement.join_family", return_value=2), \
-        patch("src.routes.settings.UserManagement.get_family_info", return_value=fake_family_info), \
-        patch("src.routes.settings.VaultManagement.get_vault_info", return_value=fake_vault_info), \
-            patch("src.routes.settings.VaultManagement.get_number_memories", return_value=10):
+    with patch("src.memoryvault.routes.settings.UserManagement.join_family", return_value=2), \
+        patch("src.memoryvault.routes.settings.UserManagement.get_family_info", return_value=fake_family_info), \
+        patch("src.memoryvault.routes.settings.VaultManagement.get_vault_info", return_value=fake_vault_info), \
+            patch("src.memoryvault.routes.settings.VaultManagement.get_number_memories", return_value=10):
         res = client.post("/settings/join_family",
                           data={
                               "invite_code": "piaskjdaosikdm"
@@ -274,7 +274,7 @@ def test_join_family_exception_handeling(app_client):
         session["user_id"] = 1
         session["user_info"] = {"firstname": "Max"}
 
-    with patch("src.routes.settings.UserManagement.join_family", side_effect=RuntimeError):
+    with patch("src.memoryvault.routes.settings.UserManagement.join_family", side_effect=RuntimeError):
         res = client.post("/settings/join_family",
                           data={
                               "invite_code": "piaskjdaosikdm"
@@ -345,12 +345,12 @@ def test_post_create_family_successful(app_client):
         session["user_id"] = 1
         session["user_info"] = fake_user_info
 
-    with patch("src.routes.settings.UserManagement.get_user_info", return_value=fake_user_info), \
-        patch("src.routes.settings.UserManagement.create_family", return_value=2), \
-        patch("src.services.VaultManagement.create_vault") as mock_vault, \
-        patch("src.routes.settings.UserManagement.get_family_info", return_value=fake_family_info), \
-        patch("src.routes.settings.VaultManagement.get_vault_info", return_value=fake_vault_info), \
-            patch("src.routes.settings.VaultManagement.get_number_memories", return_value=10):
+    with patch("src.memoryvault.routes.settings.UserManagement.get_user_info", return_value=fake_user_info), \
+        patch("src.memoryvault.routes.settings.UserManagement.create_family", return_value=2), \
+        patch("src.memoryvault.services.VaultManagement.create_vault") as mock_vault, \
+        patch("src.memoryvault.routes.settings.UserManagement.get_family_info", return_value=fake_family_info), \
+        patch("src.memoryvault.routes.settings.VaultManagement.get_vault_info", return_value=fake_vault_info), \
+            patch("src.memoryvault.routes.settings.VaultManagement.get_number_memories", return_value=10):
         res = client.post("/settings/create_family",
                           data={
                               "duration": "6",
@@ -376,7 +376,7 @@ def test_create_family_exception_handeling(app_client):
         session["user_id"] = 1
         session["user_info"] = {"firstname": "Max"}
 
-    with patch("src.routes.settings.UserManagement.create_family", side_effect=RuntimeError):
+    with patch("src.memoryvault.routes.settings.UserManagement.create_family", side_effect=RuntimeError):
         res = client.post("/settings/create_family")
 
         assert res.status_code == 200
@@ -433,8 +433,8 @@ def test_post_quit_family_successful(app_client):
         session["user_info"] = fake_user_info
         session["family_vault_info"] = {"test": "a"}
 
-    with patch("src.routes.settings.UserManagement.quit_family") as mock_family_quit, \
-            patch("src.routes.settings.UserManagement.get_user_info", return_value=fake_user_info):
+    with patch("src.memoryvault.routes.settings.UserManagement.quit_family") as mock_family_quit, \
+            patch("src.memoryvault.routes.settings.UserManagement.get_user_info", return_value=fake_user_info):
         res = client.post("/settings/quit_family",
                           follow_redirects=True)
 
@@ -456,7 +456,7 @@ def test_create_family_exception_handeling(app_client):
         session["user_info"] = {"firstname": "Max"}
         session["family_vault_info"] = {"test": "a"}
 
-    with patch("src.routes.settings.UserManagement.quit_family", side_effect=RuntimeError):
+    with patch("src.memoryvault.routes.settings.UserManagement.quit_family", side_effect=RuntimeError):
         res = client.post("/settings/quit_family")
 
         assert res.status_code == 200

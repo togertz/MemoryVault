@@ -37,8 +37,8 @@ def test_post_login_wrong_password(app_client):
     """
     app, client = app_client
 
-    with patch("src.routes.user.UserManagement.check_login", return_value=None), \
-            patch("src.routes.user.UserManagement.username_taken", return_value=True):
+    with patch("src.memoryvault.routes.user.UserManagement.check_login", return_value=None), \
+            patch("src.memoryvault.routes.user.UserManagement.username_taken", return_value=True):
         res = client.post("/u/login",
                           data={"username": "admin", "password": "admin"},
                           follow_redirects=True)
@@ -54,8 +54,8 @@ def test_post_login_user_not_exists(app_client):
     """
     app, client = app_client
 
-    with patch("src.routes.user.UserManagement.check_login", return_value=None), \
-            patch("src.routes.user.UserManagement.username_taken", return_value=False):
+    with patch("src.memoryvault.routes.user.UserManagement.check_login", return_value=None), \
+            patch("src.memoryvault.routes.user.UserManagement.username_taken", return_value=False):
         res = client.post("/u/login",
                           data={"username": "admin", "password": "admin"},
                           follow_redirects=True)
@@ -75,9 +75,9 @@ def test_post_login_successful(app_client):
     fake_vault_info = {"days_left": 10, "period_duration": 6,
                        "curr_period_end": "Friday, 26 March 2025"}
 
-    with patch("src.routes.user.UserManagement.check_login", return_value=1), \
-            patch("src.routes.user.UserManagement.get_user_info", return_value=fake_user_info), \
-            patch("src.routes.user.VaultManagement.get_vault_info", return_value=fake_vault_info):
+    with patch("src.memoryvault.routes.user.UserManagement.check_login", return_value=1), \
+            patch("src.memoryvault.routes.user.UserManagement.get_user_info", return_value=fake_user_info), \
+            patch("src.memoryvault.routes.user.VaultManagement.get_vault_info", return_value=fake_vault_info):
         res = client.post("/u/login",
                           data={"username": "admin", "password": "admin"},
                           follow_redirects=True)
@@ -93,7 +93,7 @@ def test_login_exception_handeling(app_client):
     """
     app, client = app_client
 
-    with patch("src.routes.settings.UserManagement.check_login", side_effect=RuntimeError):
+    with patch("src.memoryvault.routes.settings.UserManagement.check_login", side_effect=RuntimeError):
         res = client.post("/u/login",
                           data={"username": "admin", "password": "admin"})
 
@@ -168,7 +168,7 @@ def test_post_register_successful(app_client):
     """
     app, client = app_client
 
-    with patch("src.routes.user.UserManagement.create_user") as mock_register:
+    with patch("src.memoryvault.routes.user.UserManagement.create_user") as mock_register:
         res = client.post("/u/register",
                           data={
                               "username": "admin",
@@ -190,7 +190,7 @@ def test_register_exception_handeling(app_client):
     """
     app, client = app_client
 
-    with patch("src.routes.settings.UserManagement.create_user", side_effect=RuntimeError):
+    with patch("src.memoryvault.routes.settings.UserManagement.create_user", side_effect=RuntimeError):
         res = client.post("/u/register",
                           data={
                               "username": "admin",
@@ -214,7 +214,7 @@ def test_get_username_taken(app_client):
     """
     app, client = app_client
 
-    with patch("src.routes.user.UserManagement.username_taken", return_value=False):
+    with patch("src.memoryvault.routes.user.UserManagement.username_taken", return_value=False):
         res = client.get("/u/username-taken?username=admin")
 
         assert res.status_code == 200

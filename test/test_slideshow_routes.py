@@ -52,7 +52,7 @@ def test_get_index_with_private_vault(app_client):
          "period_end": "Sunday, 31 August 2025"},
     ]
 
-    with patch("src.routes.slideshow.VaultManagement.get_all_periods", return_value=fake_periods):
+    with patch("src.memoryvault.routes.slideshow.VaultManagement.get_all_periods", return_value=fake_periods):
         res = client.get("/slideshow", follow_redirects=True)
 
         assert res.status_code == 200
@@ -82,7 +82,7 @@ def test_get_index_with_private_and_family_vault(app_client):
          "period_end": "Sunday, 31 August 2025"},
     ]
 
-    with patch("src.routes.slideshow.VaultManagement.get_all_periods", return_value=fake_periods):
+    with patch("src.memoryvault.routes.slideshow.VaultManagement.get_all_periods", return_value=fake_periods):
         res = client.get("/slideshow", follow_redirects=True)
 
         assert res.status_code == 200
@@ -104,7 +104,7 @@ def test_index_exception_handeling(app_client):
         session["user_info"] = {"firstname": "Max", "admin": False}
         session["vault_info"] = {"vault_id": 1}
 
-    with patch("src.routes.slideshow.VaultManagement.get_all_periods", side_effect=Exception):
+    with patch("src.memoryvault.routes.slideshow.VaultManagement.get_all_periods", side_effect=Exception):
         res = client.get("/slideshow/")
 
         assert res.status_code == 200
@@ -137,7 +137,7 @@ def test_run_exception_handeling(app_client):
         session["user_info"] = {"firstname": "Max", "admin": False}
         session["vault_info"] = {"vault_id": 1}
 
-    with patch("src.routes.slideshow.MemoryManagement.get_memory_data", side_effect=Exception):
+    with patch("src.memoryvault.routes.slideshow.MemoryManagement.get_memory_data", side_effect=Exception):
         res = client.get("/slideshow/run?number=3")
 
         assert res.status_code == 200
@@ -157,7 +157,7 @@ def test_post_run_start_slideshow_no_memories(app_client):
         session["user_info"] = {"firstname": "Max", "admin": False}
         session["vault_info"] = {"vault_id": 1}
 
-    with patch("src.routes.slideshow.MemoryManagement.get_slideshow_order", return_value=[]):
+    with patch("src.memoryvault.routes.slideshow.MemoryManagement.get_slideshow_order", return_value=[]):
         res = client.post("/slideshow/run",
                           data={
                               "vault": "own_vault",
@@ -190,8 +190,8 @@ def test_post_run_start_slideshow(app_client):
         "latitude": None,
         "longitude": None
     }
-    with patch("src.routes.slideshow.MemoryManagement.get_slideshow_order", return_value=[1, 2, 3, 4]), \
-            patch("src.routes.slideshow.MemoryManagement.get_memory_data", return_value=fake_memory):
+    with patch("src.memoryvault.routes.slideshow.MemoryManagement.get_slideshow_order", return_value=[1, 2, 3, 4]), \
+            patch("src.memoryvault.routes.slideshow.MemoryManagement.get_memory_data", return_value=fake_memory):
         res = client.post("/slideshow/run",
                           data={
                               "vault": "own_vault",
@@ -227,7 +227,7 @@ def test_get_run_next_slide(app_client):
         "longitude": None
     }
 
-    with patch("src.routes.slideshow.MemoryManagement.get_memory_data", return_value=fake_memory):
+    with patch("src.memoryvault.routes.slideshow.MemoryManagement.get_memory_data", return_value=fake_memory):
         res = client.get("/slideshow/run?number=2")
 
         assert res.status_code == 200
