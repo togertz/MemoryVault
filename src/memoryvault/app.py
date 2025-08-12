@@ -10,9 +10,9 @@ from flask_bcrypt import Bcrypt
 load_dotenv()
 
 if os.getenv("FLASK_ENV") == "production":
-    CONFIG_CLASS = 'src.config.ProductionConfig'
+    CONFIG_CLASS = 'memoryvault.config.ProductionConfig'
 else:
-    CONFIG_CLASS = 'src.config.DevelopmentConfig'
+    CONFIG_CLASS = 'memoryvault.config.DevelopmentConfig'
 
 bcrypt_app = Bcrypt()
 

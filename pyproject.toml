@@ -1,0 +1,19 @@
+[build-system]
+requires = ["wheel", "setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name="MemoryVault"
+version="0.1.4"
+description="MemoryVault is a web application implemented using Flask for uploading fond memories"
+dependencies=[
+    "Flask",
+    "Flask-SQLAlchemy",
+    "Flask-Bcrypt",
+    "python-dotenv"
+]
+requires-python=">3.9"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+packages = ["memoryvault"]
