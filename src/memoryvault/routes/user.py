@@ -28,7 +28,7 @@ def login():
     try:
         # -- Handle user login --
         if request.method == "POST":
-            username = request.form.get("username").lower()
+            username = request.form.get("username").lower().strip()
             password = request.form.get("password")
 
             user_id = UserManagement.check_login(username=username,
