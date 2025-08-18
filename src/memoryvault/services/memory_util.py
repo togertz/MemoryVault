@@ -6,6 +6,7 @@ import enum
 import random
 from abc import ABC
 from datetime import datetime
+from azure.storage.blob import BlobServiceClient
 from flask import current_app, session
 
 from ..models import db, Memory
@@ -79,15 +80,62 @@ class MemoryManagement(ABC):
         Returns:
             str: uri of the saved image
         """
-        if current_app.config["USE_S3"]:
-            pass
+        filename = f'{session["user_id"]}_{datetime.strftime(
+            datetime.now(), "%Y_%m_%d-%H_%M_%S")}.jpg'
+
+        if current_app.config["USE_BLOB_STORAGE"]:
+            blob_service = BlobServiceClient.from_connection_string(
+                current_app.config["AZURE_STORAGE_CONNECTION_STRING"]
+            )
+
+            blob_client = blob_service.get_blob_client(
+                container=current_app.config["UPLOAD_FOLDER"],
+                blob=filename
+            )
+
+            blob_client.upload_blob(image_file, overwrite=True)
         else:
-            filename = f'{session["user_id"]}_{datetime.strftime(
-                datetime.now(), "%Y_%m_%d-%H_%M_%S")}.jpg'
             save_path = os.path.join(
                 current_app.config["UPLOAD_FOLDER"], filename)
             image_file.save(save_path)
-            return filename
+
+        return filename
+
+    @staticmethod
+    def get_image_bytes(filename: str) -> str:
+        """
+        Loads image from file storage.
+
+        Parameters:
+            filename: str
+                Filename of the image.
+
+        Returns:
+            str: byte representation of image
+        """
+        if current_app.config["USE_BLOB_STORAGE"]:
+            blob_service = BlobServiceClient.from_connection_string(
+                current_app.config["AZURE_STORAGE_CONNECTION_STRING"]
+            )
+
+            blob_client = blob_service.get_blob_client(
+                container=current_app.config["UPLOAD_FOLDER"],
+                blob=filename
+            )
+
+            downloader = blob_client.download_blob()
+            img_bytes = downloader.readall()
+            return img_bytes
+        else:
+            image_path = os.path.join(
+                current_app.config["UPLOAD_FOLDER"],
+                filename
+            )
+
+            with open(image_path, "rb") as img_file:
+                img_bytes = img_file.read()
+
+            return img_bytes
 
     @staticmethod
     def get_memory_data(memory_id: int) -> dict:

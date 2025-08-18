@@ -153,11 +153,9 @@ def start_slideshow():
         image_b64 = None
 
         if memory_data["image_uri"]:
-            image_path = os.path.join(
-                current_app.config["UPLOAD_FOLDER"], memory_data["image_uri"])
-
-            with open(image_path, "rb") as img_file:
-                image_b64 = base64.b64encode(img_file.read()).decode("utf-8")
+            image_data = MemoryManagement.get_image_bytes(
+                memory_data["image_uri"])
+            image_b64 = base64.b64encode(image_data).decode("utf-8")
 
         display_memory_info = {
             "index": current_memory,

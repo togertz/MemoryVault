@@ -23,18 +23,18 @@ class Config:
         f'postgresql+psycopg2://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_URL}/{POSTGRES_DATABASE}'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
-    USE_S3 = False
-    UPLOAD_FOLDER = "./data/images"
-
     SECRET_KEY = os.getenv("SESSION_SECRET")
 
 
-class ProductionConfig:
+class ProductionConfig(Config):
     """
     Production configuration class.
     Stores environement variables for when deployed on AWS Services.
     """
-    pass
+    USE_BLOB_STORAGE = True
+    AZURE_STORAGE_CONNECTION_STRING = os.getenv(
+        "AZURE_STORAGE_CONNECTION_STRING")
+    UPLOAD_FOLDER = "images"
 
 
 class DevelopmentConfig(Config):
@@ -43,3 +43,6 @@ class DevelopmentConfig(Config):
     Stores environment variables for when deployed on local machine.
     """
     DEBUG = True
+
+    USE_BLOB_STORAGE = False
+    UPLOAD_FOLDER = "./data/images"
