@@ -25,6 +25,8 @@ class Config:
 
     SECRET_KEY = os.getenv("SESSION_SECRET")
 
+    IMAGE_MAX_SIZE = (1024, 1024)
+
 
 class ProductionConfig(Config):
     """

@@ -2,10 +2,12 @@
 Module containing utility classes for memory management.
 """
 import os
+import io
 import enum
 import random
 from abc import ABC
 from datetime import datetime
+from PIL import Image
 from azure.storage.blob import BlobServiceClient
 from flask import current_app, session
 
@@ -80,8 +82,17 @@ class MemoryManagement(ABC):
         Returns:
             str: uri of the saved image
         """
+        # Generate filename
         filename = f'{session["user_id"]}_{datetime.strftime(
             datetime.now(), "%Y_%m_%d-%H_%M_%S")}.jpg'
+
+        # Resize image for saving storage space
+        image = Image.open(image_file)
+        max_size = current_app.config["IMAGE_MAX_SIZE"]
+        image.thumbnail(max_size)
+        image_buffer = io.BytesIO()
+        image.save(image_buffer, format="JPEG")
+        image_buffer.seek(0)
 
         if current_app.config["USE_BLOB_STORAGE"]:
             blob_service = BlobServiceClient.from_connection_string(
@@ -93,11 +104,13 @@ class MemoryManagement(ABC):
                 blob=filename
             )
 
-            blob_client.upload_blob(image_file, overwrite=True)
+            blob_client.upload_blob(image_buffer, overwrite=True)
         else:
             save_path = os.path.join(
                 current_app.config["UPLOAD_FOLDER"], filename)
-            image_file.save(save_path)
+
+            with open(save_path, "wb") as fp:
+                fp.write(image_buffer.getvalue())
 
         return filename
 
