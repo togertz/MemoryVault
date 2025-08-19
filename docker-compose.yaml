@@ -1,0 +1,52 @@
+x-env-common: &env-common
+  POSTGRES_USER: root
+  POSTGRES_PASSWORD: root
+  POSTGRES_DB: MemoryVault
+
+services:
+  flask_memoryvault:
+    build: .
+    container_name: memoryvault
+    environment:
+      <<: *env-common
+      SESSION_SECRET: BAD_SECRET
+      FLASK_ENV: development
+      POSTGRES_URL: postgres:5432
+      POSTGRES_DATABASE: MemoryVault
+    ports:
+      - "5000:5000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - mvimages:/data/images
+
+
+  postgres:
+    image: postgres:16
+    container_name: postgres
+    restart: always
+    environment:
+      <<: *env-common
+    ports:
+      - "5555:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d MemoryVault -q"]
+      interval: 5s
+      retries: 10
+
+volumes:
+  pgdata:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./data/postgres_data
+      o: bind
+  mvimages:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./data/images
+      o: bind

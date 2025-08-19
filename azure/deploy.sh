@@ -7,3 +7,5 @@ az webapp deploy \
     --name $APP_SERVICE_NAME \
     --resource-group $RESOURCE_GROUP_NAME \
     --src-path app.zip
+
+rm app.zip
