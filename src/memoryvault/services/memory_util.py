@@ -7,7 +7,7 @@ import enum
 import random
 from abc import ABC
 from datetime import datetime
-from PIL import Image
+from PIL import Image, ImageOps
 from azure.storage.blob import BlobServiceClient
 from flask import current_app, session
 
@@ -88,6 +88,7 @@ class MemoryManagement(ABC):
 
         # Resize image for saving storage space
         image = Image.open(image_file)
+        image = ImageOps.exif_transpose(image)
         max_size = current_app.config["IMAGE_MAX_SIZE"]
         image.thumbnail(max_size)
         image_buffer = io.BytesIO()
