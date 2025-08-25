@@ -23,6 +23,13 @@ class Config:
         f'postgresql+psycopg2://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_URL}/{POSTGRES_DATABASE}'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
+    SQLALCHEMY_ENGINE_OPTIONS = {
+        "pool_pre_ping": True,
+        "pool_recycle": 300,
+        "pool_size": 5,
+        "max_overflow": 10,
+    }
+
     SECRET_KEY = os.getenv("SESSION_SECRET")
 
     IMAGE_MAX_SIZE = (1024, 1024)
